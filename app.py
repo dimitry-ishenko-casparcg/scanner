@@ -1,0 +1,65 @@
+import sys
+
+from config import Config
+from flask import Flask
+from pathlib import Path
+from scanner import Scanner
+from store import Store
+from waitress import serve
+
+config_path = Path(sys.argv[1] if len(sys.argv) > 1 else "./casparcg.config")
+config = Config(config_path)
+
+store = Store(config)
+
+app = Flask(__name__)
+
+@app.route("/cinf/<path:name>")
+def cinf_path(name):
+    pass
+
+@app.route("/cls")
+def cls():
+    pass
+
+@app.route("/fls")
+def fls():
+    fonts = store.get_fonts()
+
+@app.route("/media")
+def media():
+    pass
+
+@app.route("/media/info/<path:name>")
+def media_info_path(name):
+    pass
+
+@app.route("/media/thumbnail/<path:name>")
+def media_thumbnail_path(name):
+    pass
+
+@app.route("/templates")
+def templates():
+    pass
+
+@app.route("/thumbnail")
+def thumbnail():
+    pass
+
+@app.route("/thumbnail/<path:name>")
+def thumbnail_path(name):
+    pass
+
+@app.route("/tls")
+def tls():
+    pass
+
+if __name__ == "__main__":
+    sys.tracebacklimit = 0
+
+    scanner = Scanner(config, store)
+    scanner.crawl()
+    scanner.monitor()
+
+    print(f"[main] Listening on {config.http_addr}:{config.http_port}")
+    serve(app, host=config.http_addr, port=config.http_port)
