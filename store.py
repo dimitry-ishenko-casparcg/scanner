@@ -3,6 +3,7 @@ import threading
 
 from collections.abc import Iterable
 from config import Config
+from typing import Any
 
 schema = """
 CREATE TABLE IF NOT EXISTS font (
@@ -17,28 +18,24 @@ class Store:
         self._db = sqlite3.connect(config.db_path, check_same_thread=False)
         self._db.executescript(schema)
 
-    def _add_fonts(self, fonts: Iterable[tuple[str, str]]):
-        self._db.executemany("INSERT OR REPLACE INTO font (name, path) VALUES (?, ?)", fonts)
+    def _add(self, table: str, fields: tuple[str, ...], items: Iterable[tuple[Any, ...]]):
+        with self._lock, self._db:
+            places = ",".join(["?"] * len(fields))
+            fields = ",".join(fields)
+            sql = f"INSERT OR REPLACE INTO {table} ({fields}) VALUES ({places})"
+            self._db.executemany(sql, items)
 
-    def _remove_fonts(self, names: Iterable[str]):
-        self._db.executemany("DELETE FROM font WHERE name = ?", [(name,) for name in names])
+    def _remove(self, table: str, names: Iterable[str]):
+        with self._lock, self._db:
+            sql = f"DELETE FROM {table} WHERE name = ?"
+            self._db.executemany(sql, [(name,) for name in names])
 
-    def add_fonts(self, fonts):
+    def _get(self, table: str, fields: tuple[str, ...]):
         with self._lock:
-            with self._db:
-                self._add_fonts(fonts)
+            fields = ",".join(fields)
+            sql = f"SELECT {fields} FROM {table} ORDER BY name ASC"
+            return self._db.execute(sql).fetchall()
 
-    def remove_fonts(self, names):
-        with self._lock:
-            with self._db:
-                self._remove_fonts(names)
-
-    def add_remove_fonts(self, add_fonts, remove_names):
-        with self._lock:
-            with self._db:
-                self._add_fonts(add_fonts)
-                self._remove_fonts(remove_names)
-
-    def get_fonts(self):
-        with self._lock:
-            return self._db.execute("SELECT name, path FROM font ORDER BY name ASC").fetchall()
+    def add_fonts(self, items: Iterable[tuple[Any, ...]]): self._add("font", ("name", "path"), items)
+    def remove_fonts(self, names: Iterable[str]): self._remove("font", names)
+    def get_fonts(self): return self._get("font", ("name", "path"))

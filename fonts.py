@@ -22,13 +22,15 @@ class FontHandler(FileSystemEventHandler):
         store_names = { name for name, _ in self.store.get_fonts() }
         disk_names = set(disk_fonts.keys())
 
-        add_names = disk_names - store_names
         remove_names = store_names - disk_names
+        if remove_names:
+            print(f"[fonts] Removing {len(remove_names)} fonts")
+            self.store.remove_fonts(remove_names)
 
-        add_fonts = [ (name, disk_fonts[name]) for name in add_names ]
-        if add_fonts or remove_names:
-            self.store.add_remove_fonts(add_fonts, remove_names)
-            print(f"[fonts] Added {len(add_fonts)}, removed {len(remove_names)} fonts.")
+        add_names = disk_names - store_names
+        if add_names:
+            print(f"[fonts] Adding {len(add_names)} fonts")
+            self.store.add_fonts([ (name, disk_fonts[name]) for name in add_names ])
 
     def _add(self, path: str):
         if name := get_name(Path(path), self.watch_path, extens):
