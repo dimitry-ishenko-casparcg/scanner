@@ -1,7 +1,7 @@
 import sys
 
 from config import Config
-from flask import Flask
+from flask import Flask, Response
 from pathlib import Path
 from scanner import Scanner
 from store import Store
@@ -24,7 +24,10 @@ def cls():
 
 @app.route("/fls")
 def fls():
-    fonts = store.get_fonts()
+    names = [ name for name, _ in store.get_fonts() ] + [""]
+    rows = "\r\n".join(names)
+    body = f"200 FLS OK\r\n{rows}\r\n"
+    return Response(body, mimetype='text/plain')
 
 @app.route("/media")
 def media():
