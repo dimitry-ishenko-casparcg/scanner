@@ -1,6 +1,9 @@
 from pathlib import Path
 from store import Store
+from util import get_name_type
 from watchdog.events import FileSystemEventHandler
+
+types = {"html", "htm", "ft", "wt", "ct", "swf"}
 
 class TemplateHandler(FileSystemEventHandler):
     def __init__(self, watch_path: Path, store: Store):
@@ -10,20 +13,44 @@ class TemplateHandler(FileSystemEventHandler):
 
     def crawl(self):
         print("[templates] Scanning", self.watch_path)
-        for file_path in self.watch_path.rglob("*"):
-            if file_path.is_file():
-                pass
+        disk_templates = {}
+        for path in self.watch_path.rglob("*"):
+            if path.is_file():
+                name, type_ = get_name_type(path, self.watch_path, types)
+                if name: disk_templates[name] = (str(path), type_)
+
+        store_names = { name for name, *_ in self.store.get_templates() }
+        disk_names = set(disk_templates.keys())
+
+        remove_names = store_names - disk_names
+        if remove_names:
+            print(f"[templates] Removing {len(remove_names)} templates")
+            self.store.remove_templates(remove_names)
+
+        add_names = disk_names - store_names
+        if add_names:
+            print(f"[templates] Adding {len(add_names)} templates")
+            self.store.add_templates([ (name,) + disk_templates[name] + (None,) for name in add_names ])
+
+    def _add(self, path: str):
+        name, type_ = get_name_type(Path(path), self.watch_path, types)
+        if name:
+            print(f"[templates] Adding {name} => {path}")
+            self.store.add_templates([(name, path, type_, None)])
+
+    def _remove(self, path: str):
+        name, _ = get_name_type(Path(path), self.watch_path, types)
+        if name:
+            print(f"[templates] Removing {name} => {path}")
+            self.store.remove_templates([name])
 
     def on_created(self, event):
-        if not event.is_directory:
-            pass
-
-    def on_modified(self, event):
-        if not event.is_directory:
-            pass
+        if not event.is_directory: self._add(event.src_path)
 
     def on_deleted(self, event):
+        if not event.is_directory: self._remove(event.src_path)
+
+    def on_moved(self, event):
         if not event.is_directory:
-            pass
-
-
+            self._remove(event.src_path)
+            self._add(event.dest_path)
