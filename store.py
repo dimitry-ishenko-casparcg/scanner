@@ -1,6 +1,7 @@
 import sqlite3
 import threading
 
+from collections.abc import Iterable
 from config import Config
 
 schema = """
@@ -11,15 +12,15 @@ CREATE TABLE IF NOT EXISTS font (
 """
 
 class Store:
-    def __init__(self, config):
+    def __init__(self, config: Config):
         self._lock = threading.Lock()
         self._db = sqlite3.connect(config.db_path, check_same_thread=False)
         self._db.executescript(schema)
 
-    def _add_fonts(self, fonts):
+    def _add_fonts(self, fonts: Iterable[tuple[str, str]]):
         self._db.executemany("INSERT OR REPLACE INTO font (name, path) VALUES (?, ?)", fonts)
 
-    def _remove_fonts(self, names):
+    def _remove_fonts(self, names: Iterable[str]):
         self._db.executemany("DELETE FROM font WHERE name = ?", [(name,) for name in names])
 
     def add_fonts(self, fonts):
