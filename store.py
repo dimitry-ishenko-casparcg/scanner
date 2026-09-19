@@ -10,6 +10,13 @@ CREATE TABLE IF NOT EXISTS font (
     name TEXT PRIMARY KEY,
     path TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS template (
+    name TEXT PRIMARY KEY,
+    path TEXT NOT NULL,
+    type TEXT NOT NULL,
+    gdd TEXT
+);
 """
 
 class Store:
@@ -39,3 +46,7 @@ class Store:
     def add_fonts(self, items: Iterable[tuple[Any, ...]]): self._add("font", ("name", "path"), items)
     def remove_fonts(self, names: Iterable[str]): self._remove("font", names)
     def get_fonts(self): return self._get("font", ("name", "path"))
+
+    def add_templates(self, items: Iterable[tuple[Any, ...]]): self._add("template", ("name", "path", "type", "gdd"), items)
+    def remove_templates(self, names: Iterable[str]): self._remove("template", names)
+    def get_templates(self): return self._get("template", ("name", "path", "type", "gdd"))
