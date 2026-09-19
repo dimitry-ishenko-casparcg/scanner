@@ -1,7 +1,10 @@
 from pathlib import Path
 
-def get_name(path: Path, base_path: Path, extens):
-    if path.suffix.lower() in extens:
-        name = str(path.relative_to(base_path).with_suffix(""))
-        return name.replace("\\", "/")
-    else: return None
+def get_name_type(path: Path, base_path: Path, types):
+    type_ = path.suffix.lower()[1:]
+    if not type_ in types: return None, None
+
+    name = str(path.relative_to(base_path).with_suffix(""))
+    name = name.upper().replace("\\", "/")
+
+    return name, "html" if type_ == "htm" else type_
