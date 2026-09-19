@@ -3,7 +3,7 @@ from store import Store
 from watchdog.events import FileSystemEventHandler
 
 class FontHandler(FileSystemEventHandler):
-    def __init__(self, watch_path, store):
+    def __init__(self, watch_path: Path, store):
         self.watch_path = watch_path
         self.store = store
         super().__init__()

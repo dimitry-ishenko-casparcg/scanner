@@ -2,12 +2,12 @@ from pathlib import Path
 import xml.etree.ElementTree as et
 
 class Config:
-    def __init__(self, config_path):
+    def __init__(self, config_path: Path):
         self.db_path = Path("./scanner.db")
         self.http_addr = "0.0.0.0"
         self.http_port = 8000
 
-        def get_path(config_path, parent_node, tag_name, fallback):
+        def get_path(config_path: Path, parent_node, tag_name, fallback):
             node = parent_node.find(tag_name) if parent_node else None
             path = node.text.strip() if node is not None and node.text else fallback
 
