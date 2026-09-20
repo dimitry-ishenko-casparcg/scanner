@@ -48,11 +48,15 @@ class Store:
             sql = f"DELETE FROM {table} WHERE name = ?"
             self._db.executemany(sql, [(name,) for name in names])
 
-    def _get(self, table: str, fields: tuple[str, ...]):
+    def _get(self, table: str, fields: tuple[str, ...], **match):
         with self._lock:
             fields = ",".join(fields)
-            sql = f"SELECT {fields} FROM {table} ORDER BY name ASC"
-            return self._db.execute(sql).fetchall()
+            cond, params = "", []
+            if match:
+                cond = "WHERE " + (" AND ".join(f"{name} = ?" for name in match.keys()))
+                params = list(match.values())
+            sql = f"SELECT {fields} FROM {table} {cond} ORDER BY name ASC"
+            return self._db.execute(sql, params).fetchall()
 
     def add_fonts(self, items: Iterable[tuple[Any, ...]]): self._add("font", ("name", "path"), items)
     def remove_fonts(self, names: Iterable[str]): self._remove("font", names)
