@@ -28,7 +28,7 @@ def fls():
     names = [ name for name, _ in store.get_fonts() ] + [""]
     rows = "\r\n".join(names)
     body = f"200 FLS OK\r\n{rows}\r\n"
-    return Response(body, mimetype='text/plain')
+    return Response(body, mimetype="text/plain")
 
 @app.route("/media")
 def media():
@@ -70,7 +70,7 @@ def tls():
     names = [ name for name, *_ in store.get_templates() ] + [""]
     rows = "\r\n".join(names)
     body = f"200 TLS OK\r\n{rows}\r\n"
-    return Response(body, mimetype='text/plain')
+    return Response(body, mimetype="text/plain")
 
 if __name__ == "__main__":
     scanner = Scanner(config, store)
