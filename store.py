@@ -11,6 +11,17 @@ CREATE TABLE IF NOT EXISTS font (
     path TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS media (
+    name TEXT PRIMARY KEY,
+    path TEXT NOT NULL,
+    size INTEGER NOT NULL,
+    time INTEGER NOT NULL,
+    cinf TEXT,
+    tinf TEXT,
+    media_info TEXT,
+    thumbnail BLOB
+);
+
 CREATE TABLE IF NOT EXISTS template (
     name TEXT PRIMARY KEY,
     path TEXT NOT NULL,
@@ -47,6 +58,12 @@ class Store:
     def remove_fonts(self, names: Iterable[str]): self._remove("font", names)
     def get_fonts(self): return self._get("font", ("name", "path"))
 
-    def add_templates(self, items: Iterable[tuple[Any, ...]]): self._add("template", ("name", "path", "type", "gdd"), items)
+    def add_media(self, items: Iterable[tuple[Any, ...]]):
+        self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"), items)
+    def remove_media(self, names: Iterable[str]): self._remove("media", names)
+    def get_media(self): return self._get("media", ("name", "path", "size", "time"))
+
+    def add_templates(self, items: Iterable[tuple[Any, ...]]):
+        self._add("template", ("name", "path", "type", "gdd"), items)
     def remove_templates(self, names: Iterable[str]): self._remove("template", names)
     def get_templates(self): return self._get("template", ("name", "path", "type", "gdd"))
