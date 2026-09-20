@@ -14,8 +14,7 @@ class Scanner:
         ]
 
     def crawl(self):
-        for handler in self.handlers:
-            handler.crawl()
+        for handler in self.handlers: handler.crawl()
 
     def monitor(self):
         for handler in self.handlers:
