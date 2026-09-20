@@ -1,15 +1,11 @@
+from handler import EventHandler
 from pathlib import Path
 from store import Store
 from util import get_gdd, get_name_type
-from watchdog.events import FileSystemEventHandler
 
 types = {"html", "htm", "ft", "wt", "ct", "swf"}
 
-class TemplateHandler(FileSystemEventHandler):
-    def __init__(self, watch_path: Path, store: Store):
-        self.watch_path = watch_path
-        self.store = store
-        super().__init__()
+class TemplateHandler(EventHandler):
 
     def crawl(self):
         print(f"[templates] Scanning {self.watch_path}")
@@ -34,7 +30,7 @@ class TemplateHandler(FileSystemEventHandler):
             print(f"[templates] Adding {len(add_names)} templates")
             self.store.add_templates([ (name,) + on_disk[name] + (None,) for name in add_names ])
 
-    def _add(self, path: Path):
+    def add(self, path: Path):
         name, type_ = get_name_type(path, self.watch_path, types)
         if not name: return
 
@@ -46,25 +42,9 @@ class TemplateHandler(FileSystemEventHandler):
         except Exception as e: print(f"[templates] Error: {e}")
         self.store.add_templates([ (name, fullpath, type_, gdd) ])
 
-    def _remove(self, path: Path):
+    def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path, types)
         if not name: return
 
         print(f"[templates] Removing {name}")
         self.store.remove_templates([ name ])
-
-    def on_created(self, event):
-        if not event.is_directory: self._add(Path(event.src_path))
-
-    def on_modified(self, event):
-        if not event.is_directory: self._add(Path(event.src_path))
-
-    def on_deleted(self, event):
-        if not event.is_directory: self._remove(Path(event.src_path))
-        else: self.crawl()
-
-    def on_moved(self, event):
-        if not event.is_directory:
-            self._remove(Path(event.src_path))
-            self._add(Path(event.dest_path))
-        else: self.crawl()
