@@ -17,7 +17,8 @@ class FontHandler(FileSystemEventHandler):
         for path in self.watch_path.rglob("*"):
             if path.is_file():
                 name, _ = get_name_type(path, self.watch_path, types)
-                if name: disk_fonts[name] = str(path)
+                fullpath = str(path.resolve())
+                if name: disk_fonts[name] = fullpath
 
         store_names = { name for name, _ in self.store.get_fonts() }
         disk_names = set(disk_fonts.keys())
@@ -33,15 +34,17 @@ class FontHandler(FileSystemEventHandler):
             self.store.add_fonts([ (name, disk_fonts[name]) for name in add_names ])
 
     def _add(self, path: str):
-        name, _ = get_name_type(Path(path), self.watch_path, types)
+        path = Path(path)
+        name, _ = get_name_type(path, self.watch_path, types)
         if name:
-            print(f"[fonts] Adding {name} => {path}")
-            self.store.add_fonts([(name, path)])
+            fullpath = str(path.resolve())
+            print(f"[fonts] Adding {name} => {fullpath}")
+            self.store.add_fonts([(name, fullpath)])
 
     def _remove(self, path: str):
         name, _ = get_name_type(Path(path), self.watch_path, types)
         if name:
-            print(f"[fonts] Removing {name} => {path}")
+            print(f"[fonts] Removing {name}")
             self.store.remove_fonts([name])
 
     def on_created(self, event):
