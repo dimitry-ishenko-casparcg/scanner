@@ -12,16 +12,17 @@ class TemplateHandler(FileSystemEventHandler):
         super().__init__()
 
     def crawl(self):
-        print("[templates] Scanning", self.watch_path)
-        disk_templates = {}
+        print(f"[templates] Scanning {self.watch_path}")
+        on_disk = {}
         for path in self.watch_path.rglob("*"):
-            if path.is_file():
-                name, type_ = get_name_type(path, self.watch_path, types)
-                fullpath = str(path.resolve())
-                if name: disk_templates[name] = (fullpath, type_)
+            if not path.is_file(): continue
+
+            name, type_ = get_name_type(path, self.watch_path, types)
+            fullpath = str(path.resolve())
+            if name: on_disk[name] = (fullpath, type_)
 
         store_names = { name for name, *_ in self.store.get_templates() }
-        disk_names = set(disk_templates.keys())
+        disk_names = set(on_disk.keys())
 
         remove_names = store_names - disk_names
         if remove_names:
@@ -31,32 +32,34 @@ class TemplateHandler(FileSystemEventHandler):
         add_names = disk_names - store_names
         if add_names:
             print(f"[templates] Adding {len(add_names)} templates")
-            self.store.add_templates([ (name,) + disk_templates[name] + (None,) for name in add_names ])
+            self.store.add_templates([ (name,) + on_disk[name] + (None,) for name in add_names ])
 
-    def _add(self, path: str):
-        path = Path(path)
+    def _add(self, path: Path):
         name, type_ = get_name_type(path, self.watch_path, types)
-        if name:
-            fullpath = str(path.resolve())
-            print(f"[templates] Adding {name} => {fullpath}")
-            gdd = None
-            try: gdd = get_gdd(path)
-            except Exception as e: print(f"[templates] GDD error: {e}")
-            self.store.add_templates([(name, fullpath, type_, gdd)])
+        if not name: return
 
-    def _remove(self, path: str):
-        name, _ = get_name_type(Path(path), self.watch_path, types)
-        if name:
-            print(f"[templates] Removing {name}")
-            self.store.remove_templates([name])
+        fullpath = str(path.resolve())
+        print(f"[templates] Adding {name} => {fullpath}")
+
+        gdd = None
+        try: gdd = get_gdd(path)
+        except Exception as e: print(f"[templates] Error: {e}")
+        self.store.add_templates([ (name, fullpath, type_, gdd) ])
+
+    def _remove(self, path: Path):
+        name, _ = get_name_type(path, self.watch_path, types)
+        if not name: return
+
+        print(f"[templates] Removing {name}")
+        self.store.remove_templates([ name ])
 
     def on_created(self, event):
-        if not event.is_directory: self._add(event.src_path)
+        if not event.is_directory: self._add(Path(event.src_path))
 
     def on_deleted(self, event):
-        if not event.is_directory: self._remove(event.src_path)
+        if not event.is_directory: self._remove(Path(event.src_path))
 
     def on_moved(self, event):
         if not event.is_directory:
-            self._remove(event.src_path)
-            self._add(event.dest_path)
+            self._remove(Path(event.src_path))
+            self._add(Path(event.dest_path))
