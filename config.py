@@ -3,7 +3,7 @@ import xml.etree.ElementTree as et
 
 class Config:
     def __init__(self, config_path: Path):
-        self.db_path = Path("./scanner.db")
+        self.db_path = config_path.parent / "scanner.db"
         self.http_addr = "0.0.0.0"
         self.http_port = 8000
 
