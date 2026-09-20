@@ -67,6 +67,12 @@ class Store:
     def remove_media(self, names: Iterable[str]): self._remove("media", names)
     def get_media(self): return self._get("media", ("name", "path", "size", "time"))
 
+    def get_media_cinf(self, name: str = None):
+        if name:
+            rows = self._get("media", ("cinf",), name=name)
+            return rows[0][0] if rows else None
+        return self._get("media", ("cinf",))
+
     def add_templates(self, items: Iterable[tuple[Any, ...]]):
         self._add("template", ("name", "path", "type", "gdd"), items)
     def remove_templates(self, names: Iterable[str]): self._remove("template", names)
