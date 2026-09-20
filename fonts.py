@@ -52,10 +52,15 @@ class FontHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory: self._add(Path(event.src_path))
 
+    def on_modified(self, event):
+        if not event.is_directory: self._add(Path(event.src_path))
+
     def on_deleted(self, event):
         if not event.is_directory: self._remove(Path(event.src_path))
+        else: self.crawl()
 
     def on_moved(self, event):
         if not event.is_directory:
             self._remove(Path(event.src_path))
             self._add(Path(event.dest_path))
+        else: self.crawl()
