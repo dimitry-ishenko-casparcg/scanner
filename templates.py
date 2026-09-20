@@ -1,6 +1,6 @@
 from pathlib import Path
 from store import Store
-from util import get_name_type
+from util import get_gdd, get_name_type
 from watchdog.events import FileSystemEventHandler
 
 types = {"html", "htm", "ft", "wt", "ct", "swf"}
@@ -39,7 +39,10 @@ class TemplateHandler(FileSystemEventHandler):
         if name:
             fullpath = str(path.resolve())
             print(f"[templates] Adding {name} => {fullpath}")
-            self.store.add_templates([(name, fullpath, type_, None)])
+            gdd = None
+            try: gdd = get_gdd(path)
+            except Exception as e: print(f"[templates] GDD error: {e}")
+            self.store.add_templates([(name, fullpath, type_, gdd)])
 
     def _remove(self, path: str):
         name, _ = get_name_type(Path(path), self.watch_path, types)
