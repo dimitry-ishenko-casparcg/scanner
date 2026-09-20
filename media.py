@@ -1,27 +1,11 @@
+from handler import EventHandler
 from pathlib import Path
 from store import Store
-from watchdog.events import FileSystemEventHandler
 
-class MediaHandler(FileSystemEventHandler):
-    def __init__(self, watch_path: Path, store: Store):
-        self.watch_path = watch_path
-        self.store = store
-        super().__init__()
+class MediaHandler(EventHandler):
 
     def crawl(self):
-        print("[media] Scanning", self.watch_path)
+        print(f"[media] Scanning {self.watch_path}")
         for file_path in self.watch_path.rglob("*"):
             if file_path.is_file():
                 pass
-
-    def on_created(self, event):
-        if not event.is_directory:
-            pass
-
-    def on_modified(self, event):
-        if not event.is_directory:
-            pass
-
-    def on_deleted(self, event):
-        if not event.is_directory:
-            pass
