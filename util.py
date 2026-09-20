@@ -22,5 +22,5 @@ def get_gdd(path: Path):
     if not src: gdd = scripts[0].text
     else: gdd = (path.parent / src).read_text(encoding="utf8")
 
-    json.loads(gdd)
-    return gdd.strip() if gdd else None
+    json.loads(gdd) # test gdd
+    return gdd.strip()
