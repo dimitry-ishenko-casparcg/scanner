@@ -12,15 +12,13 @@ def get_name_type(path: Path, base_path: Path, types = None):
     return name, type_
 
 def get_gdd(path: Path):
-    text = path.read_text(encoding="utf8", errors="ignore")
-    tree = html.fromstring(text)
-
+    tree = html.parse(path)
     scripts = tree.xpath("//script[@name='graphics-data-definition']")
     if not scripts: return None
 
     src = scripts[0].get("src")
-    if not src: gdd = scripts[0].text
-    else: gdd = (path.parent / src).read_text(encoding="utf8")
+    if src: gdd = (path.parent / src).read_text(encoding="utf8")
+    else: gdd = scripts[0].text
 
     json.loads(gdd) # test gdd
     return gdd.strip()
