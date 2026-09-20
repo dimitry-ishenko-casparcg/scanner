@@ -17,7 +17,8 @@ class TemplateHandler(FileSystemEventHandler):
         for path in self.watch_path.rglob("*"):
             if path.is_file():
                 name, type_ = get_name_type(path, self.watch_path, types)
-                if name: disk_templates[name] = (str(path), type_)
+                fullpath = str(path.resolve())
+                if name: disk_templates[name] = (fullpath, type_)
 
         store_names = { name for name, *_ in self.store.get_templates() }
         disk_names = set(disk_templates.keys())
@@ -33,15 +34,17 @@ class TemplateHandler(FileSystemEventHandler):
             self.store.add_templates([ (name,) + disk_templates[name] + (None,) for name in add_names ])
 
     def _add(self, path: str):
-        name, type_ = get_name_type(Path(path), self.watch_path, types)
+        path = Path(path)
+        name, type_ = get_name_type(path, self.watch_path, types)
         if name:
-            print(f"[templates] Adding {name} => {path}")
-            self.store.add_templates([(name, path, type_, None)])
+            fullpath = str(path.resolve())
+            print(f"[templates] Adding {name} => {fullpath}")
+            self.store.add_templates([(name, fullpath, type_, None)])
 
     def _remove(self, path: str):
         name, _ = get_name_type(Path(path), self.watch_path, types)
         if name:
-            print(f"[templates] Removing {name} => {path}")
+            print(f"[templates] Removing {name}")
             self.store.remove_templates([name])
 
     def on_created(self, event):
