@@ -1,3 +1,4 @@
+import json
 import sys
 
 from config import Config
@@ -43,7 +44,18 @@ def media_thumbnail_path(name):
 
 @app.route("/templates")
 def templates():
-    pass
+    templates = []
+    for name, path, type_, gdd in store.get_templates():
+        info = { "id": name, "path": path, "type": type_ }
+        if gdd:
+            try:
+                info["gdd"] = json.loads(gdd)
+            except json.JSONDecodeError:
+                pass
+        templates.append(info)
+
+    body = json.dumps({"templates": templates})
+    return Response(body, mimetype="application/json")
 
 @app.route("/thumbnail")
 def thumbnail():
@@ -61,8 +73,6 @@ def tls():
     return Response(body, mimetype='text/plain')
 
 if __name__ == "__main__":
-    sys.tracebacklimit = 0
-
     scanner = Scanner(config, store)
     scanner.crawl()
     scanner.monitor()
