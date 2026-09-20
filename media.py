@@ -1,6 +1,7 @@
 from handler import EventHandler
 from pathlib import Path
 from store import Store
+from util import get_cinf, get_info, get_name_type
 
 class MediaHandler(EventHandler):
 
@@ -9,3 +10,28 @@ class MediaHandler(EventHandler):
         for file_path in self.watch_path.rglob("*"):
             if file_path.is_file():
                 pass
+
+    def add(self, path: Path):
+        name, _ = get_name_type(path, self.watch_path)
+        if not name: return
+
+        fullpath = str(path.resolve())
+        stat = path.stat()
+        size, time = stat.st_size, stat.st_mtime
+        print(f"[media] Adding {name} => {fullpath}")
+
+        info = None
+        try: info = get_info(path)
+        except Exception as e: print(f"[media] Error: {e}")
+        if not info: return
+
+        cinf = get_cinf(name, size, time, info)
+        info = json.dumps(info)
+        self.store.add_media([ (name, fullpath, size, time, cinf, None, info, None) ])
+
+    def remove(self, path: Path):
+        name, _ = get_name_type(path, self.watch_path)
+        if not name: return
+
+        print(f"[media] Removing {name}")
+        self.store.remove_templates([ name ])
