@@ -12,10 +12,8 @@ class FontHandler(EventHandler):
         on_disk = {}
         for path in self.watch_path.rglob("*"):
             if not path.is_file(): continue
-
             name, _ = get_name_type(path, self.watch_path, types)
-            fullpath = str(path.resolve())
-            if name: on_disk[name] = fullpath
+            if name: on_disk[name] = str(path.resolve())
 
         store_names = { name for name, _ in self.store.get_fonts() }
         disk_names = set(on_disk.keys())
