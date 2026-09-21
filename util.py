@@ -76,3 +76,62 @@ def get_cinf(name, size, time, info):
         clip["time_base"] = audio.get("time_base", "0/1")
 
     return '"{name}" {type} {size} {time} {frames} {time_base}'.format(**clip)
+
+def get_media_info(name: str, path: Path, size: int, time: int, info: dict):
+    fmt = info.get("format", {})
+    return json.dumps({
+        "name": name,
+        "path": str(path),
+        "size": size,
+        "time": int(time * 1000),
+        "field_order": "unknown", # TODO
+
+        "streams": [
+            {
+                "codec": {
+                    "long_name": s.get("codec_long_name"),
+                    "type": s.get("codec_type"),
+                    "time_base": s.get("codec_time_base"),
+                    "tag_string": s.get("codec_tag_string"),
+                    "is_avc": s.get("is_avc"),
+                },
+
+                # video
+                "width": s.get("width"),
+                "height": s.get("height"),
+                "sample_aspect_ratio": s.get("sample_aspect_ratio"),
+                "display_aspect_ratio": s.get("display_aspect_ratio"),
+                "pix_fmt": s.get("pix_fmt"),
+                "bits_per_raw_sample": s.get("bits_per_raw_sample"),
+                "frame_rate": s.get("avg_frame_rate") or s.get("r_frame_rate"),
+                
+                # audio
+                "sample_fmt": s.get("sample_fmt"),
+                "sample_rate": s.get("sample_rate"),
+                "channels": s.get("channels"),
+                "channel_layout": s.get("channel_layout"),
+                "bits_per_sample": s.get("bits_per_sample"),
+                
+                # common
+                "time_base": s.get("time_base"),
+                "start_time": s.get("start_time"),
+                "duration_ts": s.get("duration_ts"),
+                "duration": s.get("duration"),
+                "bit_rate": s.get("bit_rate"),
+                "max_bit_rate": s.get("max_bit_rate"),
+                "nb_frames": s.get("nb_frames"),
+            }
+            for s in info.get("streams", [])
+        ],
+
+        "format": {
+            "name": fmt.get("format_name"),
+            "long_name": fmt.get("format_long_name"),
+            "size": fmt.get("size"),
+
+            "start_time": fmt.get("start_time"),
+            "duration": fmt.get("duration"),
+            "bit_rate": fmt.get("bit_rate"),
+            "max_bit_rate": fmt.get("max_bit_rate"),
+        }
+    })
