@@ -72,6 +72,12 @@ class Store:
             return rows[0][0] if rows else None
         return self._get("media", ("cinf",))
 
+    def get_media_info(self, name: str = None):
+        if name:
+            rows = self._get("media", ("media_info",), name=name)
+            return rows[0][0] if rows else None
+        return self._get("media", ("media_info",))
+
     def add_template(self, *args):
         self._add("template", ("name", "path", "type", "gdd"), args)
     def remove_template(self, name: str): self._remove("template", name)
