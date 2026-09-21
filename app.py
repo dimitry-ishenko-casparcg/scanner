@@ -38,7 +38,9 @@ def fls():
 
 @app.route("/media")
 def media():
-    pass
+    infos = [ info for info, in store.get_media_info() if info ]
+    body = f"[{','.join(infos)}]"
+    return Response(body, mimetype="application/json")
 
 @app.route("/media/info/<path:name>")
 def media_info_path(name):
