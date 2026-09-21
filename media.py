@@ -1,7 +1,7 @@
 from handler import EventHandler
 from pathlib import Path
 from store import Store
-from util import get_cinf, get_info, get_name_type
+from util import get_cinf, get_info, get_media_info, get_name_type
 
 class MediaHandler(EventHandler):
 
@@ -32,8 +32,8 @@ class MediaHandler(EventHandler):
         if not info: return
 
         cinf = get_cinf(name, size, time, info)
-        info = json.dumps(info)
-        self.store.add_media(name, fullpath, size, time, cinf, None, info, None)
+        media_info = get_media_info(name, path, size, time, info)
+        self.store.add_media(name, fullpath, size, time, cinf, None, media_info, None)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)
