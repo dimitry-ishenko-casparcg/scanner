@@ -25,11 +25,11 @@ class FontHandler(EventHandler):
 
         fullpath = str(path.resolve())
         print(f"[fonts] Adding {name} => {fullpath}")
-        self.store.add_fonts([ (name, fullpath) ])
+        self.store.add_font(name, fullpath)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path, types)
         if not name: return
 
         print(f"[fonts] Removing {name}")
-        self.store.remove_fonts([ name ])
+        self.store.remove_font(name)

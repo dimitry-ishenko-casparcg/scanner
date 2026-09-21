@@ -33,11 +33,11 @@ class MediaHandler(EventHandler):
 
         cinf = get_cinf(name, size, time, info)
         info = json.dumps(info)
-        self.store.add_media([ (name, fullpath, size, time, cinf, None, info, None) ])
+        self.store.add_media(name, fullpath, size, time, cinf, None, info, None)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)
         if not name: return
 
         print(f"[media] Removing {name}")
-        self.store.remove_templates([ name ])
+        self.store.remove_media(name)

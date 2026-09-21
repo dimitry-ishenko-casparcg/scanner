@@ -29,11 +29,11 @@ class TemplateHandler(EventHandler):
         gdd = None
         try: gdd = get_gdd(path)
         except Exception as e: print(f"[templates] Error: {e}")
-        self.store.add_templates([ (name, fullpath, type_, gdd) ])
+        self.store.add_template(name, fullpath, type_, gdd)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path, types)
         if not name: return
 
         print(f"[templates] Removing {name}")
-        self.store.remove_templates([ name ])
+        self.store.remove_template(name)
