@@ -42,7 +42,9 @@ def media():
 
 @app.route("/media/info/<path:name>")
 def media_info_path(name):
-    pass
+    info = store.get_media_info(name.upper())
+    body = info or "{}"
+    return Response(body, mimetype="application/json")
 
 @app.route("/media/thumbnail/<path:name>")
 def media_thumbnail_path(name):
