@@ -64,7 +64,8 @@ class Store:
     def add_media(self, *args):
         self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"), args)
     def remove_media(self, name: str): self._remove("media", name)
-    def get_media(self): return self._get("media", ("name", "path", "size", "time"))
+
+    def get_media_path(self): return self._get("media", ("path",))
 
     def get_media_cinf(self, name: str = None):
         if name:

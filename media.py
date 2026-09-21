@@ -12,7 +12,7 @@ class MediaHandler(EventHandler):
             if not path.is_file(): continue
             name, _ = get_name_type(path, self.watch_path)
             if name: found.add(path.resolve())
-        stored = { Path(path) for _, path, *_ in self.store.get_media() }
+        stored = { Path(path) for path, in self.store.get_media_path() }
 
         for path in stored - found: self.remove(path)
         for path in found - stored: self.add(path)
