@@ -24,8 +24,12 @@ class MediaHandler(EventHandler):
         fullpath = str(path.resolve())
         stat = path.stat()
         size, time = stat.st_size, stat.st_mtime
-        print(f"[media] Adding {name} => {fullpath}")
 
+        if found := self.store.get_media_stat(name):
+            prev_size, prev_time = found[0]
+            if size == prev_size and time == prev_time: return
+
+        print(f"[media] Adding {name} => {fullpath}")
         info = cinf = media_info = None
         try:
             info = get_info(path)
