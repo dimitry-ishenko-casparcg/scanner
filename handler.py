@@ -4,7 +4,7 @@ from watchdog.events import FileSystemEventHandler
 
 class EventHandler(FileSystemEventHandler):
     def __init__(self, watch_path: Path, store: Store):
-        self.watch_path = watch_path
+        self.watch_path = watch_path.resolve()
         self.store = store
         super().__init__()
 

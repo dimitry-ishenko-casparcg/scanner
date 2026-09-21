@@ -7,9 +7,15 @@ class MediaHandler(EventHandler):
 
     def crawl(self):
         print(f"[media] Scanning {self.watch_path}")
-        for file_path in self.watch_path.rglob("*"):
-            if file_path.is_file():
-                pass
+        found = set()
+        for path in self.watch_path.rglob("*"):
+            if not path.is_file(): continue
+            name, _ = get_name_type(path, self.watch_path)
+            if name: found.add(path.resolve())
+        stored = { Path(path) for _, path, *_ in self.store.get_media() }
+
+        for path in stored - found: self.remove(path)
+        for path in found - stored: self.add(path)
 
     def add(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)

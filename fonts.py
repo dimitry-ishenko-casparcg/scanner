@@ -9,24 +9,15 @@ class FontHandler(EventHandler):
 
     def crawl(self):
         print(f"[fonts] Scanning {self.watch_path}")
-        on_disk = {}
+        found = set()
         for path in self.watch_path.rglob("*"):
             if not path.is_file(): continue
             name, _ = get_name_type(path, self.watch_path, types)
-            if name: on_disk[name] = str(path.resolve())
+            if name: found.add(path.resolve())
+        stored = { Path(path) for _, path in self.store.get_fonts() }
 
-        store_names = { name for name, _ in self.store.get_fonts() }
-        disk_names = set(on_disk.keys())
-
-        remove_names = store_names - disk_names
-        if remove_names:
-            print(f"[fonts] Removing {len(remove_names)} fonts")
-            self.store.remove_fonts(remove_names)
-
-        add_names = disk_names - store_names
-        if add_names:
-            print(f"[fonts] Adding {len(add_names)} fonts")
-            self.store.add_fonts([ (name, on_disk[name]) for name in add_names ])
+        for path in stored - found: self.remove(path)
+        for path in found - stored: self.add(path)
 
     def add(self, path: Path):
         name, _ = get_name_type(path, self.watch_path, types)
