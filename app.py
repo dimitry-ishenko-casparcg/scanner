@@ -21,7 +21,10 @@ def cinf_path(name):
 
 @app.route("/cls")
 def cls():
-    pass
+    cinfs = [ cinf for cinf, in store.get_media_cinf() ] + [""]
+    rows = "\r\n".join(cinfs)
+    body = f"200 CLS OK\r\n{rows}\r\n"
+    return Response(body, mimetype="text/plain")
 
 @app.route("/fls")
 def fls():
