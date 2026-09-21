@@ -8,12 +8,12 @@ from scanner import Scanner
 from store import Store
 from waitress import serve
 
+app = Flask(__name__)
+
 config_path = Path(sys.argv[1] if len(sys.argv) > 1 else "./casparcg.config")
 config = Config(config_path)
 
 store = Store(config)
-
-app = Flask(__name__)
 
 @app.route("/cinf/<path:name>")
 def cinf_path(name):
@@ -51,10 +51,8 @@ def templates():
     for name, path, type_, gdd in store.get_templates():
         info = { "id": name, "path": path, "type": type_ }
         if gdd:
-            try:
-                info["gdd"] = json.loads(gdd)
-            except json.JSONDecodeError:
-                pass
+            try: info["gdd"] = json.loads(gdd)
+            except json.JSONDecodeError: pass
         templates.append(info)
 
     body = json.dumps({"templates": templates})
