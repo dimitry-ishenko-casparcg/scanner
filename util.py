@@ -77,7 +77,7 @@ def get_cinf(name, size, time, info):
 
     return '"{name}" {type} {size} {time} {frames} {time_base}'.format(**clip)
 
-def get_media_info(name: str, path: Path, size: int, time: int, info: dict):
+def get_media_info(name: str, path: Path, size: int, time: float, info: dict):
     fmt = info.get("format", {})
     return json.dumps({
         "name": name,
