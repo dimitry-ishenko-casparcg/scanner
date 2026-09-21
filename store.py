@@ -66,6 +66,7 @@ class Store:
     def remove_media(self, name: str): self._remove("media", name)
 
     def get_media_path(self): return self._get("media", ("path",))
+    def get_media_stat(self, name: str): return self._get("media", ("size", "time"), name=name)
 
     def get_media_cinf(self, name: str = None):
         if name:
