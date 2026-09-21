@@ -26,13 +26,13 @@ class MediaHandler(EventHandler):
         size, time = stat.st_size, stat.st_mtime
         print(f"[media] Adding {name} => {fullpath}")
 
-        info = None
-        try: info = get_info(path)
+        info = cinf = media_info = None
+        try:
+            info = get_info(path)
+            cinf = get_cinf(name, size, time, info)
+            media_info = get_media_info(name, path, size, time, info)
         except Exception as e: print(f"[media] Error: {e}")
-        if not info: return
 
-        cinf = get_cinf(name, size, time, info)
-        media_info = get_media_info(name, path, size, time, info)
         self.store.add_media(name, fullpath, size, time, cinf, None, media_info, None)
 
     def remove(self, path: Path):
