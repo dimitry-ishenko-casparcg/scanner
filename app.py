@@ -51,7 +51,9 @@ def media_info_path(name):
 
 @app.route("/media/thumbnail/<path:name>")
 def media_thumbnail_path(name):
-    pass
+    if image := store.get_media_thumbnail(name.upper()):
+        return Response(image, mimetype="image/png")
+    return Response(status=404)
 
 @app.route("/templates")
 def templates():
