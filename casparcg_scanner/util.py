@@ -120,14 +120,14 @@ def get_media_info(name: str, path: Path, size: int, time: float, info: dict):
                 "pix_fmt": s.get("pix_fmt"),
                 "bits_per_raw_sample": s.get("bits_per_raw_sample"),
                 "frame_rate": s.get("avg_frame_rate") or s.get("r_frame_rate"),
-                
+
                 # audio
                 "sample_fmt": s.get("sample_fmt"),
                 "sample_rate": s.get("sample_rate"),
                 "channels": s.get("channels"),
                 "channel_layout": s.get("channel_layout"),
                 "bits_per_sample": s.get("bits_per_sample"),
-                
+
                 # common
                 "time_base": s.get("time_base"),
                 "start_time": s.get("start_time"),

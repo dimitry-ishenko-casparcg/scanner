@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-casparcg-scanner = "run:main"
+casparcg-scanner = "casparcg_scanner.__main__:main"
 
 [tool.setuptools.dynamic]
-version = {attr = "app.__version__"}
+version = {attr = "casparcg_scanner.__version__"}

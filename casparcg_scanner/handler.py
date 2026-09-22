@@ -21,11 +21,11 @@ class EventHandler(FileSystemEventHandler):
 
     def _touch(self, path: Path):
         with self._lock: self._pending[path] = time.monotonic() + 1.
- 
+
     def _remove(self, path: Path):
         with self._lock: self._pending.pop(path, None)
         self.remove(path)
- 
+
     def _loop(self):
         while True:
             time.sleep(0.5)

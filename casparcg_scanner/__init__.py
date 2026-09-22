@@ -9,7 +9,7 @@ from .store import Store
 app = Flask(__name__)
 
 db_path = os.environ.get("SCANNER_DB_PATH")
-store = Store(Path(db_path) if db_path else None) 
+store = Store(Path(db_path) if db_path else None)
 
 @app.route("/cinf/<path:name>")
 def cinf_path(name):
