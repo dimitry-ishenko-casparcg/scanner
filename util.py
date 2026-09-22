@@ -26,14 +26,14 @@ def get_gdd(path: Path):
     json.loads(gdd) # test gdd
     return gdd.strip()
 
-def get_info(file: Path):
+def get_info(path: Path):
     res = subprocess.run(
-        [ "ffprobe", "-hide_banner", "-i", file, "-show_streams", "-show_format", "-print_format", "json" ],
+        [ "ffprobe", "-hide_banner", "-i", path, "-show_streams", "-show_format", "-print_format", "json" ],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
         text=True, check=True
     )
-    data = json.loads(res.stdout)
-    return data if data.get("streams") else None
+    info = json.loads(res.stdout)
+    return info if info.get("streams") else None
 
 def get_cinf(name, size, time, info):
     streams = info.get("streams", [])
