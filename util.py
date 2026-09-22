@@ -3,8 +3,24 @@ import math
 import subprocess
 
 from datetime import datetime
-from lxml import html
+from lxml import etree, html
 from pathlib import Path
+
+def get_scanner_paths(config_path: Path):
+    root = etree.parse(config_path).getroot()
+    if root.tag != "configuration":
+        raise ValueError(f"Invalid root tag <{root.tag}>")
+
+    def get_path(path, fallback):
+        val = root.findtext(path, default="").strip()
+        # If 'Path(...)' is absolute, 'config_path' will be ignored.
+        return config_path.parent / Path(val or fallback)
+
+    return {
+        "font_path": get_path("paths/font-path", "font"),
+        "media_path": get_path("paths/media-path", "media"),
+        "template_path": get_path("paths/template-path", "template")
+    }
 
 def get_name_type(path: Path, base_path: Path, types = None):
     type_ = path.suffix.lower()[1:]
