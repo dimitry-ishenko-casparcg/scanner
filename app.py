@@ -25,29 +25,26 @@ def cinf_path(name):
 
 @app.route("/cls")
 def cls():
-    cinfs = [ cinf for cinf, in store.get_media_cinf() ] + [""]
-    rows = "\r\n".join(cinfs)
+    rows = "\r\n".join(store.get_media_cinfs() + [""])
     body = f"200 CLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
 
 @app.route("/fls")
 def fls():
-    names = [ name for name, _ in store.get_fonts() ] + [""]
-    rows = "\r\n".join(names)
+    rows = "\r\n".join(store.get_font_names() + [""])
     body = f"200 FLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
 
 @app.route("/media")
 def media():
-    infos = [ info for info, in store.get_media_info() if info ]
-    body = f"[{','.join(infos)}]"
+    body = "[" + ",".join(store.get_media_infos()) + "]"
     return Response(body, mimetype="application/json")
 
 @app.route("/media/info/<path:name>")
 def media_info_path(name):
-    info = store.get_media_info(name.upper())
-    body = info or "{}"
-    return Response(body, mimetype="application/json")
+    if info := store.get_media_info(name.upper()):
+        return Response(info, mimetype="application/json")
+    return Response(status=404)
 
 @app.route("/media/thumbnail/<path:name>")
 def media_thumbnail_path(name):
@@ -57,21 +54,18 @@ def media_thumbnail_path(name):
 
 @app.route("/templates")
 def templates():
-    templates = []
-    for name, path, type_, gdd in store.get_templates():
-        info = { "id": name, "path": path, "type": type_ }
-        if gdd:
-            try: info["gdd"] = json.loads(gdd)
-            except json.JSONDecodeError: pass
-        templates.append(info)
+    def make(name, path, type_, gdd):
+        tmpl = { "id": name, "path": path, "type": type_ }
+        if gdd: tmpl["gdd"] = json.loads(gdd)
+        return tmpl
+    templates = [ make(*tmpl) for tmpl in store.get_templates() ]
 
-    body = json.dumps({"templates": templates})
+    body = json.dumps({ "templates": templates })
     return Response(body, mimetype="application/json")
 
 @app.route("/thumbnail")
 def thumbnail():
-    tinfs = [ tinf for tinf, in store.get_media_tinf() if tinf ] + [""]
-    rows = "\r\n".join(tinfs)
+    rows = "\r\n".join(store.get_media_tinfs() + [""])
     body = f"200 THUMBNAIL LIST OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
 
@@ -85,8 +79,7 @@ def thumbnail_path(name):
 
 @app.route("/tls")
 def tls():
-    names = [ name for name, *_ in store.get_templates() ] + [""]
-    rows = "\r\n".join(names)
+    rows = "\r\n".join(store.get_template_names() + [""])
     body = f"200 TLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
 

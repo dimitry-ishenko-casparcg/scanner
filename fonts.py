@@ -14,7 +14,7 @@ class FontHandler(EventHandler):
             if not path.is_file(): continue
             name, _ = get_name_type(path, self.watch_path, types)
             if name: found.add(path.resolve())
-        stored = { Path(path) for _, path in self.store.get_fonts() }
+        stored = set(map(Path, self.store.get_font_paths()))
 
         for path in stored - found: self.remove(path)
         for path in found - stored: self.add(path)

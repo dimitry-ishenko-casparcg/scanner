@@ -12,7 +12,7 @@ class MediaHandler(EventHandler):
             if not path.is_file(): continue
             name, _ = get_name_type(path, self.watch_path)
             if name: found.add(path.resolve())
-        stored = { Path(path) for path, in self.store.get_media_path() }
+        stored = set(map(Path, self.store.get_media_paths()))
 
         for path in stored - found: self.remove(path)
         for path in found - stored: self.add(path)
@@ -25,8 +25,8 @@ class MediaHandler(EventHandler):
         stat = path.stat()
         size, time = stat.st_size, stat.st_mtime
 
-        if found := self.store.get_media_stat(name):
-            prev_size, prev_time = found[0]
+        if found := self.store.get_media_size_time(name):
+            prev_size, prev_time = found
             if size == prev_size and time == prev_time: return
 
         print(f"[media] Adding {name} => {fullpath}")
