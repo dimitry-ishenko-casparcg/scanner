@@ -1,4 +1,0 @@
-Flask
-lxml
-waitress
-watchdog
