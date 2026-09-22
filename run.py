@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 from waitress import serve
 
-from app import app, store
+from app import app, store, __version__
 from app.scanner import Scanner
 from app.util import get_scanner_paths
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
         help="host address to bind the server to (default: 0.0.0.0)")
     parser.add_argument("--http-port", type=int, default=8000, metavar="port",
         help="port to bind the server to (default: 8000)")
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s v{__version__}")
     
     args = parser.parse_args()
     scanner_paths = get_scanner_paths(args.config)

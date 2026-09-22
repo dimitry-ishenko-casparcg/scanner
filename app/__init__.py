@@ -1,3 +1,5 @@
+__version__ = "0.0"
+
 import base64, json, os
 
 from flask import Flask, Response
