@@ -7,7 +7,7 @@ from app import app, store, __version__
 from app.scanner import Scanner
 from app.util import get_scanner_paths
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="CasparCG Media Scanner")
 
     parser.add_argument("config", nargs="?", type=Path, default=Path("casparcg.config"),
@@ -32,3 +32,5 @@ if __name__ == "__main__":
 
     print(f"[main] Listening on {args.http_addr}:{args.http_port}")
     serve(app, host=args.http_addr, port=args.http_port)
+
+if __name__ == "__main__": main()
