@@ -1,7 +1,7 @@
 import sqlite3
 import threading
 
-from config import Config
+from pathlib import Path
 from typing import Any
 
 schema = """
@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS template (
 """
 
 class Store:
-    def __init__(self, config: Config):
+    def __init__(self, path: Path):
         self._lock = threading.Lock()
-        self._db = sqlite3.connect(config.db_path, check_same_thread=False)
+        self._db = sqlite3.connect(path, check_same_thread=False)
         self._db.executescript(schema)
 
     def _add(self, table: str, fields: tuple[str, ...], item: tuple[Any, ...]):

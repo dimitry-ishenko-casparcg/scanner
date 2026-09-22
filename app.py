@@ -14,7 +14,7 @@ app = Flask(__name__)
 config_path = Path(sys.argv[1] if len(sys.argv) > 1 else "./casparcg.config")
 config = Config(config_path)
 
-store = Store(config)
+store = Store(config.db_path)
 
 @app.route("/cinf/<path:name>")
 def cinf_path(name):
