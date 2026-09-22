@@ -17,10 +17,10 @@ store = Store(config)
 
 @app.route("/cinf/<path:name>")
 def cinf_path(name):
-    cinf = store.get_media_cinf(name.upper())
-    if not cinf: return "", 404
-    body = f"201 CINF OK\r\n{cinf}\r\n"
-    return Response(body, mimetype="text/plain")
+    if cinf := store.get_media_cinf(name.upper()):
+        body = f"201 CINF OK\r\n{cinf}\r\n"
+        return Response(body, mimetype="text/plain")
+    return Response(status=404)
 
 @app.route("/cls")
 def cls():
