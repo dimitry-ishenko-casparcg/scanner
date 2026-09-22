@@ -1,4 +1,3 @@
-from config import Config
 from fonts import FontHandler
 from media import MediaHandler
 from store import Store
@@ -6,11 +5,11 @@ from templates import TemplateHandler
 from watchdog.observers import Observer
 
 class Scanner:
-    def __init__(self, config: Config, store: Store):
+    def __init__(self, store: Store, font_path: Path, media_path: Path, template_path: Path):
         self.observer = Observer()
-        self.handlers = [ FontHandler(config.font_path, store),
-            MediaHandler(config.media_path, store),
-            TemplateHandler(config.template_path, store),
+        self.handlers = [ FontHandler(store, font_path),
+            MediaHandler(store, media_path),
+            TemplateHandler(store, template_path)
         ]
 
     def crawl(self):

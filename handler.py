@@ -6,10 +6,10 @@ from store import Store
 from watchdog.events import FileSystemEventHandler
 
 class EventHandler(FileSystemEventHandler):
-    def __init__(self, watch_path: Path, store: Store):
+    def __init__(self, store: Store, watch_path: Path):
         super().__init__()
-        self.watch_path = watch_path.resolve()
         self.store = store
+        self.watch_path = watch_path.resolve()
 
         self._pending = {}
         self._lock = threading.Lock()

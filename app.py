@@ -84,7 +84,7 @@ def tls():
     return Response(body, mimetype="text/plain")
 
 if __name__ == "__main__":
-    scanner = Scanner(config, store)
+    scanner = Scanner(store, config.font_path, config.media_path, config.template_path)
     scanner.crawl()
     scanner.monitor()
 
