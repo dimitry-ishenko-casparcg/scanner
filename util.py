@@ -136,17 +136,25 @@ def get_media_info(name: str, path: Path, size: int, time: float, info: dict):
         }
     })
 
-def generate_thumbnail(name: str, path: Path):
+def generate_thumbnail(name: str, path: Path, info: dict):
+    video = next((s for s in info.get("streams", []) if s.get("codec_type") == "video"), None)
+    if not video: return None, None
+
+    duration = float(video.get("duration") or info.get("format", {}).get("duration") or "0")
+    attached_pic = video.get("disposition", {}).get("attached_pic") == 1
+
     res = subprocess.run(
         [ "ffmpeg", "-hide_banner", "-i", path,
-            "-vf", "select='gt(scene,0.4)',scale=256:-1",
+            "-vf", "scale=256:-1" if duration < 0.1 or attached_pic else "select='gt(scene,0.4)',scale=256:-1",
             "-frames:v", "1", "-threads", "1", "-f", "image2pipe", "-vcodec", "png", "-"
         ],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
         check=True
     )
+
     image = res.stdout
     size = len(image)
+    if not size: return None, None
     time = datetime.now().strftime("%Y%m%dT%H%M%S")
-    
+
     return f'"{name}" {time} {size}', image

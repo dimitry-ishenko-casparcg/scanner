@@ -37,11 +37,11 @@ class MediaHandler(EventHandler):
             media_info = get_media_info(name, path, size, time, info)
         except Exception as e: print(f"[media] Error: {e}")
 
-        tinf = thumbnail = None
-        try: tinf, thumbnail = generate_thumbnail(name, path)
+        tinf = image = None
+        try: tinf, image = generate_thumbnail(name, path, info)
         except Exception as e: print(f"[media] Error: {e}")
 
-        self.store.add_media(name, fullpath, size, time, cinf, tinf, media_info, thumbnail)
+        self.store.add_media(name, fullpath, size, time, cinf, tinf, media_info, image)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)
