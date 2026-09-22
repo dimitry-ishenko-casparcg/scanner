@@ -135,3 +135,18 @@ def get_media_info(name: str, path: Path, size: int, time: float, info: dict):
             "max_bit_rate": fmt.get("max_bit_rate"),
         }
     })
+
+def generate_thumbnail(name: str, path: Path):
+    res = subprocess.run(
+        [ "ffmpeg", "-hide_banner", "-i", path,
+            "-vf", "select='gt(scene,0.4)',scale=256:-1",
+            "-frames:v", "1", "-threads", "1", "-f", "image2pipe", "-vcodec", "png", "-"
+        ],
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+        check=True
+    )
+    image = res.stdout
+    size = len(image)
+    time = datetime.now().strftime("%Y%m%dT%H%M%S")
+    
+    return f'"{name}" {time} {size}', image
