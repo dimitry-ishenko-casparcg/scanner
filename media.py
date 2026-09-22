@@ -1,7 +1,7 @@
 from handler import EventHandler
 from pathlib import Path
 from store import Store
-from util import get_cinf, get_info, get_media_info, get_name_type
+from util import generate_thumbnail, get_cinf, get_info, get_media_info, get_name_type
 
 class MediaHandler(EventHandler):
 
@@ -37,7 +37,11 @@ class MediaHandler(EventHandler):
             media_info = get_media_info(name, path, size, time, info)
         except Exception as e: print(f"[media] Error: {e}")
 
-        self.store.add_media(name, fullpath, size, time, cinf, None, media_info, None)
+        tinf = thumbnail = None
+        try: tinf, thumbnail = generate_thumbnail(name, path)
+        except Exception as e: print(f"[media] Error: {e}")
+
+        self.store.add_media(name, fullpath, size, time, cinf, tinf, media_info, thumbnail)
 
     def remove(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)
