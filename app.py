@@ -67,7 +67,10 @@ def templates():
 
 @app.route("/thumbnail")
 def thumbnail():
-    pass
+    tinfs = [ tinf for tinf, in store.get_media_tinf() if tinf ] + [""]
+    rows = "\r\n".join(tinfs)
+    body = f"200 THUMBNAIL LIST OK\r\n{rows}\r\n"
+    return Response(body, mimetype="text/plain")
 
 @app.route("/thumbnail/<path:name>")
 def thumbnail_path(name):
