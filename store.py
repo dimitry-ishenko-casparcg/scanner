@@ -2,7 +2,6 @@ import sqlite3
 import threading
 
 from pathlib import Path
-from typing import Any
 
 schema = """
 CREATE TABLE IF NOT EXISTS font (
@@ -35,7 +34,7 @@ class Store:
         self._db = sqlite3.connect(path, check_same_thread=False)
         self._db.executescript(schema)
 
-    def _add(self, table: str, fields: tuple[str, ...], item: tuple[Any, ...]):
+    def _add(self, table: str, fields: tuple, item: tuple):
         with self._lock, self._db:
             places = ",".join(["?"] * len(fields))
             fields = ",".join(fields)
@@ -47,7 +46,7 @@ class Store:
             sql = f"DELETE FROM {table} WHERE name = ?"
             self._db.execute(sql, (name,))
 
-    def _get(self, table: str, fields: tuple[str, ...], **match):
+    def _get(self, table: str, fields: tuple, **match):
         with self._lock:
             fields = ",".join(fields)
             cond, params = "", []
