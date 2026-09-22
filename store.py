@@ -56,12 +56,15 @@ class Store:
             sql = f"SELECT {fields} FROM {table} {cond} ORDER BY name ASC"
             return self._db.execute(sql, params).fetchall()
 
-    def add_font(self, *args): self._add("font", ("name", "path"), args)
+    def add_font(self, name: str, path: str): self._add("font", ("name", "path"), (name, path))
     def remove_font(self, name: str): self._remove("font", name)
     def get_fonts(self): return self._get("font", ("name", "path"))
 
-    def add_media(self, *args):
-        self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"), args)
+    def add_media(self, name: str, path: str, size: int, time: float,
+        cinf: str, tinf: str, media_info: str, thumbnail: bytes):
+        self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"),
+            (name, path, size, time, cinf, tinf, media_info, thumbnail)
+        )
     def remove_media(self, name: str): self._remove("media", name)
 
     def get_media_path(self): return self._get("media", ("path",))
@@ -84,7 +87,7 @@ class Store:
         rows = self._get("media", ("thumbnail",), name=name)
         return rows[0][0] if rows else None
 
-    def add_template(self, *args):
-        self._add("template", ("name", "path", "type", "gdd"), args)
+    def add_template(self, name: str, path: str, type_: str, gdd: str):
+        self._add("template", ("name", "path", "type", "gdd"), (name, path, type_, gdd))
     def remove_template(self, name: str): self._remove("template", name)
     def get_templates(self): return self._get("template", ("name", "path", "type", "gdd"))
