@@ -1,0 +1,19 @@
+Source: casparcg-scanner
+Section: python
+Maintainer: Dimitry Ishenko <dimitry.ishenko@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ pybuild-plugin-pyproject,
+ python3-all (>= 3.10),
+ python3-setuptools,
+Standards-Version: 4.7.4
+Vcs-Browser: https://github.com/dimitry-ishenko-casparcg/scanner
+Vcs-Git: https://github.com/dimitry-ishenko-casparcg/scanner.git
+
+Package: casparcg-scanner
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+Description: CasparCG Media Scanner
