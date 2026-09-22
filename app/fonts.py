@@ -1,7 +1,7 @@
-from handler import EventHandler
+from .handler import EventHandler
 from pathlib import Path
-from store import Store
-from util import get_name_type
+from .store import Store
+from .util import get_name_type
 
 types = {"ttf", "otf", "woff", "woff2"}
 

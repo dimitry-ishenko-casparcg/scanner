@@ -1,20 +1,13 @@
-import base64
-import json
-import sys
+import base64, json, os
 
-from config import Config
 from flask import Flask, Response
 from pathlib import Path
-from scanner import Scanner
-from store import Store
-from waitress import serve
+from .store import Store
 
 app = Flask(__name__)
 
-config_path = Path(sys.argv[1] if len(sys.argv) > 1 else "./casparcg.config")
-config = Config(config_path)
-
-store = Store(config.db_path)
+db_path = os.environ.get("SCANNER_DB_PATH")
+store = Store(Path(db_path) if db_path else None) 
 
 @app.route("/cinf/<path:name>")
 def cinf_path(name):
@@ -82,11 +75,3 @@ def tls():
     rows = "\r\n".join(store.get_template_names() + [""])
     body = f"200 TLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
-
-if __name__ == "__main__":
-    scanner = Scanner(store, config.font_path, config.media_path, config.template_path)
-    scanner.crawl()
-    scanner.monitor()
-
-    print(f"[main] Listening on {config.http_addr}:{config.http_port}")
-    serve(app, host=config.http_addr, port=config.http_port)

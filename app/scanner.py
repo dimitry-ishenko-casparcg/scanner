@@ -1,7 +1,7 @@
-from fonts import FontHandler
-from media import MediaHandler
-from store import Store
-from templates import TemplateHandler
+from .fonts import FontHandler
+from .media import MediaHandler
+from .store import Store
+from .templates import TemplateHandler
 from watchdog.observers import Observer
 
 class Scanner:

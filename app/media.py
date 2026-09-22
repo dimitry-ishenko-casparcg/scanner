@@ -1,7 +1,7 @@
-from handler import EventHandler
+from .handler import EventHandler
 from pathlib import Path
-from store import Store
-from util import generate_thumbnail, get_cinf, get_info, get_media_info, get_name_type
+from .store import Store
+from .util import generate_thumbnail, get_cinf, get_info, get_media_info, get_name_type
 
 class MediaHandler(EventHandler):
 

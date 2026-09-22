@@ -2,7 +2,7 @@ import threading
 import time
 
 from pathlib import Path
-from store import Store
+from .store import Store
 from watchdog.events import FileSystemEventHandler
 
 class EventHandler(FileSystemEventHandler):
