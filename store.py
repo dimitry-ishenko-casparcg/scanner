@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS template (
 """
 
 class Store:
-    def __init__(self, path: Path):
+    def __init__(self, db_path: Path):
         self._lock = threading.Lock()
-        self._db = sqlite3.connect(path, check_same_thread=False)
+        self._db = sqlite3.connect(db_path, check_same_thread=False)
         self._db.executescript(schema)
 
     def _add(self, table: str, fields: tuple, item: tuple):
