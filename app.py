@@ -1,3 +1,4 @@
+import base64
 import json
 import sys
 
@@ -74,7 +75,11 @@ def thumbnail():
 
 @app.route("/thumbnail/<path:name>")
 def thumbnail_path(name):
-    pass
+    if image := store.get_media_thumbnail(name.upper()):
+        image = base64.b64encode(image).decode("utf8")
+        body = f"201 THUMBNAIL RETRIEVE OK\r\n{image}\r\n"
+        return Response(body, mimetype="text/plain")
+    return Response(status=404)
 
 @app.route("/tls")
 def tls():
