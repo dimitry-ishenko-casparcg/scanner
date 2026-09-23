@@ -1,3 +1,15 @@
+casparcg-scanner (0.3) unstable; urgency=medium
+
+  * Prepare for 0.3 release
+  * Update README.md
+  * create-release: use Ubuntu 22.04
+  * d/rules: install systemd service
+  * d/control: use dh-sequence-python3
+  * Add systemd service
+  * d/control: depend on FFmpeg
+
+ -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Wed, 23 Sep 2026 01:52:19 -0400
+
 casparcg-scanner (0.2) unstable; urgency=medium
 
   * Prepare for 0.2 release
