@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/dimitry-ishenko-casparcg/scanner
-Upstream-Name: casparcg-scanner
+Upstream-Name: scanner
 Upstream-Contact: 2026 Dimitry Ishenko <dimitry.ishenko@gmail.com>
 
 Files:

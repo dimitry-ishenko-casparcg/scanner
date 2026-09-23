@@ -1,4 +1,4 @@
-Source: casparcg-scanner
+Source: scanner
 Section: python
 Maintainer: Dimitry Ishenko <dimitry.ishenko@gmail.com>
 Build-Depends:

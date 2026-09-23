@@ -1,4 +1,4 @@
-casparcg-scanner (0.3) unstable; urgency=medium
+scanner (0.3) unstable; urgency=medium
 
   * Prepare for 0.3 release
   * Update README.md
@@ -10,7 +10,7 @@ casparcg-scanner (0.3) unstable; urgency=medium
 
  -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Wed, 23 Sep 2026 01:52:19 -0400
 
-casparcg-scanner (0.2) unstable; urgency=medium
+scanner (0.2) unstable; urgency=medium
 
   * Prepare for 0.2 release
   * create-release: build stand-alone binary
@@ -19,7 +19,7 @@ casparcg-scanner (0.2) unstable; urgency=medium
 
  -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Tue, 22 Sep 2026 21:12:15 -0400
 
-casparcg-scanner (0.1) unstable; urgency=medium
+scanner (0.1) unstable; urgency=medium
 
   * Prepare for 0.1 release
   * Add release workflow
