@@ -3,9 +3,9 @@ Section: python
 Maintainer: Dimitry Ishenko <dimitry.ishenko@gmail.com>
 Build-Depends:
  debhelper-compat (= 13),
- dh-python,
+ dh-sequence-python3,
  pybuild-plugin-pyproject,
- python3-all (>= 3.10),
+ python3-all,
  python3-setuptools,
 Standards-Version: 4.7.4
 Vcs-Browser: https://github.com/dimitry-ishenko-casparcg/scanner
