@@ -40,6 +40,36 @@ jobs:
           pip install build
           python3 -m build
       - env:
-          FULL_TAG: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "$FULL_TAG" dist/*.whl
+        run: gh release upload "${{ github.ref_name }}" dist/*.whl
+
+  build_binary:
+    needs: create_release
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-20.04
+            asset_name: casparcg-scanner-linux-amd64
+          - os: ubuntu-22.04-arm
+            asset_name: casparcg-scanner-linux-arm64
+          - os: windows-latest
+            asset_name: casparcg-scanner-windows-amd64.exe
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - run: |
+          python -m pip install --upgrade pip
+          pip install . pyinstaller
+          pyinstaller --onefile casparcg-scanner
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mv dist/casparcg-scanner* "dist/${{ matrix.asset_name }}"
+          gh release upload "${{ github.ref_name }}" "dist/${{ matrix.asset_name }}"
