@@ -1,5 +1,91 @@
-casparcg-scanner (0.1) UNRELEASED; urgency=medium
+casparcg-scanner (0.1) unstable; urgency=medium
 
-  * Initial release.
+  * Prepare for 0.1 release
+  * Add release workflow
+  * Add Debian packaging
+  * main: better error messages
+  * Restructure for system-wide install
+  * Add minimal README.md
+  * Replace requirements.txt with pyproject.toml
+  * run: use main()
+  * run: add version option
+  * Restructure as a package
+  * scanner/handlers: decouple from Config
+  * util: add get_scanner_paths()
+  * store: add connect()
+  * store: tweak
+  * util: fix generate_thumbnail()
+  * store: refactor getters
+  * store: more readable setters
+  * store: take it easy on typing
+  * store: decouple from config
+  * app: implement /media/thumbnail endpoint
+  * app: implement /thumbnail/<path> endpoint
+  * app: tweak
+  * app: implement /thumbnail endpoint
+  * store: add get_media_tinf() and get_media_thumbnail()
+  * media: store thumbnail info
+  * util: add generate_thumbnail()
+  * util: tweak
+  * media: compare size and time
+  * store: add get_media_stat()
+  * store: get_media() => get_media_path()
+  * app: implement /media endpoint
+  * app: implement /media/info endpoint
+  * store: add get_media_info()
+  * util: fix
+  * media: allow empty cinf and media_info
+  * app: implement /cinf endpoint
+  * media: save media_info
+  * util: add get_media_info()
+  * handler: debounce events
+  * app: tweak
+  * app: implement /cls endpoint
+  * store: switch to single-item functions
+  * Simplify font, media and template handlers
+  * fonts: tweak
+  * templates: tweak
+  * store: add get_media_cinf()
+  * store: optional match filter
+  * media: implement add() and remove()
+  * media: inherit from EventHandler
+  * util: add get_info() and get_cinf()
+  * templates: inherit from EventHandler
+  * fonts: inherit from EventHandler
+  * Add EventHandler class
+  * util: refactor get_gdd()
+  * fonts: detect mods and dir (re)moves
+  * templates: detect mods and dir (re)moves
+  * templates: refactor
+  * store: add support for media
+  * scanner: refactor
+  * fonts: refactor
+  * config: simplify
+  * util: allow empty types in get_name_type()
+  * util: simplify get_gdd()
+  * templates: handle gdd
+  * util: add support for gdd
+  * app: tweak
+  * app: implement /templates endpoint (except gdd)
+  * templates: store full paths
+  * fonts: store full paths
+  * util: refactor get_name_type()
+  * config: place the db next to casparcg.config
+  * config: refactor
+  * app: implement /tls endpoint
+  * templates: implement crawl and monitor
+  * store: add schema for templates
+  * util: get_name() => get_name_type()
+  * store: refactor
+  * app: implement /fls endpoint
+  * fonts: implement crawl
+  * fonts: implement events
+  * Add more hints
+  * Add path hints
+  * Add util module
+  * Add LICENSE.md
+  * Add .gitignore
+  * Add .gitignore
+  * Import project skeleton
 
- -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Tue, 22 Sep 2026 17:49:17 -0400
+ -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Tue, 22 Sep 2026 20:27:02 -0400
