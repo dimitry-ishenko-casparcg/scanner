@@ -18,5 +18,8 @@ dependencies = [
 [project.scripts]
 casparcg-scanner = "casparcg_scanner.__main__:main"
 
+[tool.setuptools]
+packages = ["casparcg_scanner"]
+
 [tool.setuptools.dynamic]
 version = {attr = "casparcg_scanner.__version__"}
