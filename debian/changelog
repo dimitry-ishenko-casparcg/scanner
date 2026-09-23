@@ -1,3 +1,12 @@
+casparcg-scanner (0.2) unstable; urgency=medium
+
+  * Prepare for 0.2 release
+  * create-release: build stand-alone binary
+  * Add casparcg-scanner script
+  * create-release: upload only the wheel file
+
+ -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Tue, 22 Sep 2026 21:12:15 -0400
+
 casparcg-scanner (0.1) unstable; urgency=medium
 
   * Prepare for 0.1 release
