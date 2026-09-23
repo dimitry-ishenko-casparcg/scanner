@@ -48,7 +48,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             asset_name: casparcg-scanner-linux-amd64
           - os: ubuntu-22.04-arm
             asset_name: casparcg-scanner-linux-arm64
