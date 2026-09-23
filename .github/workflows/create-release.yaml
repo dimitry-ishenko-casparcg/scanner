@@ -13,7 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-
       - env:
           FULL_NAME: ${{ github.repository }}
           FULL_TAG: ${{ github.ref_name }}
@@ -22,7 +21,6 @@ jobs:
           NAME="${FULL_NAME#*/}"
           VERS="${FULL_TAG#debian/}"
           VERS="${VERS#*[0-9]%}"
-
           gh release create "$FULL_TAG" --title "$NAME $VERS" --generate-notes
 
   build_wheel:
@@ -30,7 +28,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
 
     steps:
       - uses: actions/checkout@v7
@@ -42,8 +39,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install build
           python3 -m build
-
       - env:
           FULL_TAG: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "$FULL_TAG" dist/*
+        run: gh release upload "$FULL_TAG" dist/*.whl
