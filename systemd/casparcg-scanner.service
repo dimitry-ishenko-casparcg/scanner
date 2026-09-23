@@ -1,0 +1,14 @@
+[Unit]
+Description=CasparCG Media Scanner
+After=network.target
+
+[Service]
+WorkingDirectory=%h/media
+ExecStart=/usr/bin/casparcg-scanner
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
