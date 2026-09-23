@@ -5,3 +5,6 @@ export PYBUILD_DISABLE=test
 
 %:
 	dh $@ --buildsystem=pybuild
+
+override_dh_installsystemduser:
+	dh_installsystemduser --no-enable
