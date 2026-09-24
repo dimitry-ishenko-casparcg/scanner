@@ -1,3 +1,11 @@
+scanner (0.4.1) unstable; urgency=medium
+
+  * Prepare for 0.4.1 release
+  * README: update
+  * d/control: add description
+
+ -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Thu, 24 Sep 2026 16:56:00 -0400
+
 scanner (0.4) unstable; urgency=medium
 
   * Prepare for 0.4 release
