@@ -1,4 +1,4 @@
-__version__ = "0.4"
+__version__ = "0.4.1"
 
 import base64, json, os
 
