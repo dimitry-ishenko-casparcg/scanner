@@ -47,7 +47,7 @@ must have it installed and available on your system.
 * **Linux:** If you install the Scanner using the Debian package, FFmpeg will
   be installed automatically as a dependency. If you use the standalone binary,
   install FFmpeg via your package manager (e.g., `sudo apt install ffmpeg`).
-  
+
 * **Windows:** Download the latest build from the [official FFmpeg
   website](https://ffmpeg.org/download.html) and follow their installation
   instructions. Be sure to add it to your system's `PATH` so the Scanner can
@@ -58,7 +58,8 @@ must have it installed and available on your system.
 Binary packages for Debian, Ubuntu, Raspberry Pi and other Debian-based
 distributions can be installed from the [CCCP Linux Package
 Archive](https://github.com/cccp-linux/archive). Follow their instructions to
-set up the archive and be sure to add the _**casparcg**_ component. After that:
+set up the archive and be sure to add the <ins>_casparcg_</ins> component. After
+that:
 
 ```shell
 sudo apt install casparcg-scanner
@@ -145,10 +146,11 @@ following:
 #### Windows: NSSM
 
 To run the standalone Windows executable in the background as a Windows
-Service, you can use [NSSM (Non-Sucking Service
-Manager)](https://nssm.cc/).
+Service, you can use [NSSM - the Non-Sucking Service
+Manager](https://nssm.cc/).
 
-1. Download NSSM from the [Download page](https://nssm.cc/download) and extract it.
+1. Download the latest version from the [NSSM
+   website](https://nssm.cc/download) and extract it.
 
 2. Open an Administrator Command Prompt and run:
 
@@ -156,11 +158,11 @@ Manager)](https://nssm.cc/).
    nssm install "CasparCG Scanner" "C:\path\to\casparcg-scanner-windows-amd64.exe"
    ```
 
-3. (Optional) The Scanner looks for `casparcg.config` in its working directory
-   (which defaults to the executable's location). If both files are in the same
+3. (Optional) The Scanner looks for `casparcg.config` in its working directory,
+   which defaults to the executable's location. If both files are in the same
    directory, you don't need to do anything.
 
-   Otherwise, you need to set the Scanner's working directory:
+   Otherwise, you need to change the Scanner's working directory:
 
    ```dos
    nssm set "CasparCG Scanner" AppDirectory "C:\path\to\casparcg\server"
