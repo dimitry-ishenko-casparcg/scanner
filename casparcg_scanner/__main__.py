@@ -38,7 +38,7 @@ def main():
     except KeyboardInterrupt:
         print("\n[main] Shutting down...")
         sys.exit(0)
-        
+
     except Exception as e:
         if not args.debug:
             print(str(e), file=sys.stderr)
