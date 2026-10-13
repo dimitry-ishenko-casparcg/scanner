@@ -11,10 +11,12 @@ def get_scanner_paths(config_path: Path):
     if root.tag != "configuration":
         raise ValueError(f"Invalid root tag <{root.tag}>")
 
-    def get_path(path, fallback):
-        val = root.findtext(path, default="").strip()
+    def get_path(xpath, fallback):
+        val = root.findtext(xpath, default="").strip()
         # If 'Path(...)' is absolute, 'config_path' will be ignored.
-        return config_path.parent / Path(val or fallback)
+        path = config_path.parent / Path(val or fallback)
+        if not path.is_dir(): raise ValueError(f"Directory not found: {path}")
+        return path
 
     return {
         "font_path": get_path("paths/font-path", "font"),
