@@ -1,4 +1,5 @@
 import argparse
+import shutil
 import sys
 
 from . import app, store, __version__
@@ -23,6 +24,9 @@ def main():
 
     args = parser.parse_args()
     try:
+        for tool in ("ffprobe", "ffmpeg"):
+            if not shutil.which(tool): raise FileNotFoundError(f"{tool} not found in PATH")
+
         scanner_paths = get_scanner_paths(args.config)
 
         db_path = args.db_path or (args.config.parent / "scanner.db")
