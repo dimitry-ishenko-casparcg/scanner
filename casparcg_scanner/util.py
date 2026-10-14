@@ -51,7 +51,9 @@ def get_info(path: Path):
         text=True, check=True
     )
     info = json.loads(res.stdout)
-    return info if info.get("streams") else None
+    if not info.get("streams"): raise ValueError("No media streams")
+
+    return info
 
 def get_cinf(name: str, size: int, time: int, info: dict):
     streams = info.get("streams", [])
