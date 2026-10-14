@@ -38,8 +38,10 @@ class Store:
             self._db.close()
             del self._db
         if db_path:
-            self._db = sqlite3.connect(db_path, check_same_thread=False)
-            self._db.executescript(schema)
+            try:
+                self._db = sqlite3.connect(db_path, check_same_thread=False)
+                self._db.executescript(schema)
+            except sqlite3.Error as e: raise sqlite3.Error(f"{e}: {db_path}")
 
     def _add(self, table: str, fields: tuple, item: tuple):
         with self._lock, self._db:
