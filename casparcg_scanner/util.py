@@ -53,7 +53,7 @@ def get_info(path: Path):
     info = json.loads(res.stdout)
     return info if info.get("streams") else None
 
-def get_cinf(name, size, time, info):
+def get_cinf(name: str, size: int, time: int, info: dict):
     streams = info.get("streams", [])
 
     video = next((s for s in streams
