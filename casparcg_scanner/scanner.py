@@ -1,5 +1,6 @@
 from .fonts import FontHandler
 from .media import MediaHandler
+from pathlib import Path
 from .store import Store
 from .templates import TemplateHandler
 from watchdog.observers import Observer
