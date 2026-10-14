@@ -32,16 +32,14 @@ class MediaHandler(EventHandler):
             if size == prev_size and time == prev_time: return
 
         print(f"[media] Adding {name} => {fullpath}")
-        info = cinf = media_info = None
+        cinf = image = media_info = tinf = None
         try:
             info = get_info(path)
             cinf = get_cinf(name, size, time, info)
             media_info = get_media_info(name, path, size, time, info)
-        except Exception as e: print(f"[media] Error: {e}")
 
-        tinf = image = None
-        try: tinf, image = generate_thumbnail(name, path, info)
-        except Exception as e: print(f"[media] Error: {e}")
+            tinf, image = generate_thumbnail(name, path, info)
+        except Exception as e: print(f"[media] {e}")
 
         self.store.add_media(name, fullpath, size, time, cinf, tinf, media_info, image)
 
