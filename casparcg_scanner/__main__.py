@@ -22,6 +22,9 @@ def main():
     parser.add_argument("-v", "--version", action="version", version=f"%(prog)s v{__version__}")
     parser.add_argument("--debug", action="store_true", help="show full stack trace on errors")
 
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"): stream.reconfigure(encoding="utf8", errors="replace")
+
     args = parser.parse_args()
     try:
         for tool in ("ffprobe", "ffmpeg"):
