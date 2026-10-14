@@ -15,7 +15,9 @@ class MediaHandler(EventHandler):
         stored = set(map(Path, self.store.get_media_paths()))
 
         for path in stored - found: self.remove(path)
-        for path in found - stored: self.add(path)
+        # call add() on every found file to detect changes,
+        # while the scanner was offline
+        for path in found: self.add(path)
 
     def add(self, path: Path):
         name, _ = get_name_type(path, self.watch_path)
