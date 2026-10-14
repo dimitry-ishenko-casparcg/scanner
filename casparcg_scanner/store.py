@@ -84,12 +84,12 @@ class Store:
         return rows[0] if rows else None
     def get_media_paths(self): return [ path for path, in self._get("media", ("path",)) ]
 
-    def get_media_cinf(self, name: strNone):
+    def get_media_cinf(self, name: str):
         rows = self._get("media", ("cinf",), name=name)
         return rows[0][0] if rows else None
     def get_media_cinfs(self): return [ cinf for cinf, in self._get("media", ("cinf",)) if cinf ]
 
-    def get_media_info(self, name: strNone):
+    def get_media_info(self, name: str):
         rows = self._get("media", ("media_info",), name=name)
         return rows[0][0] if rows else None
     def get_media_infos(self): return [ info for info, in self._get("media", ("media_info",)) if info ]
