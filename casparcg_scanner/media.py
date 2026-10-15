@@ -76,7 +76,7 @@ class MediaHandler(FileSystemEventHandler):
         stored = { path for path in stored if path.is_relative_to(subdir) }
 
         found = { path for path in subdir.rglob("*") if path.is_file() }
-        for path in stored | found: self._update(path)
+        for path in stored | found: self._enqueue(self._update, path)
 
     def _update(self, path: Path):
         name = path.relative_to(self._path).with_suffix("")
