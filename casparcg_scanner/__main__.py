@@ -4,7 +4,6 @@ import sys
 
 from . import app, font, mdia, store, tmpl, __version__
 from pathlib import Path
-from .watcher import Watcher
 from .util import get_scanner_paths
 from waitress import serve
 
@@ -39,9 +38,7 @@ def main():
         mdia.set_path(scanner_paths["media_path"])
         tmpl.set_path(scanner_paths["template_path"])
 
-        watcher = Watcher(store, scanner_paths["media_path"])
-        watcher.crawl()
-        watcher.monitor()
+        mdia.monitor()
 
         print(f"[main] Listening on {args.http_addr}:{args.http_port}")
         serve(app, host=args.http_addr, port=args.http_port)
