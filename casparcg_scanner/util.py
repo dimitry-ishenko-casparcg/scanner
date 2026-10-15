@@ -9,10 +9,10 @@ def get_info(path: Path):
     res = subprocess.run(
         [ "ffprobe", "-hide_banner", "-i", path, "-show_streams", "-show_format", "-print_format", "json" ],
         stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-        text=True, check=True
+        text=True, check=True, timeout=10
     )
     info = json.loads(res.stdout)
-    if not info.get("streams"): raise ValueError("No media streams")
+    if not info.get("streams"): raise ValueError("no media streams")
 
     return info
 
@@ -124,16 +124,23 @@ def generate_thumbnail(name: str, path: Path, info: dict):
     duration = float(video.get("duration") or info.get("format", {}).get("duration") or "0")
     attached_pic = video.get("disposition", {}).get("attached_pic") == 1
 
-    res = subprocess.run(
-        [ "ffmpeg", "-hide_banner", "-i", path,
-            "-vf", "scale=256:-1" if duration < 0.1 or attached_pic else "select='gt(scene,0.4)',scale=256:-1",
-            "-frames:v", "1", "-threads", "1", "-f", "image2pipe", "-vcodec", "png", "-"
-        ],
-        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-        check=True
-    )
+    def grab_frame(path: Path, vf: str = None):
+        res = subprocess.run(
+            [ "ffmpeg", "-hide_banner", "-i", path,
+                "-vf", ",".join(filter(None, [vf, "scale=256:-1"])),
+                "-frames:v", "1", "-threads", "1", "-f", "image2pipe", "-vcodec", "png", "-"
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            check=True, timeout=10
+        )
+        return res.stdout
 
-    image = res.stdout
+    image = b""
+    if duration > 0.1 and not attached_pic:
+        try: image = grab_frame(path, "select='gt(scene,0.4)'")
+        except subprocess.TimeoutExpired: pass
+    if not image: image = grab_frame(path)
+
     size = len(image)
     if not size: return None, None
     time = datetime.now().strftime("%Y%m%dT%H%M%S")
