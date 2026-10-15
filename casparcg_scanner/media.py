@@ -1,10 +1,57 @@
-from .handler import EventHandler
+import threading
+import time
+
 from pathlib import Path
 from .store import Store
 from .util import generate_thumbnail, get_cinf, get_info, get_media_info, get_name_type
+from watchdog.events import FileSystemEventHandler
 
-class MediaHandler(EventHandler):
+class MediaHandler(FileSystemEventHandler):
+    def __init__(self, store: Store, watch_path: Path):
+        super().__init__()
+        self.store = store
+        self.watch_path = watch_path.resolve()
 
+        self._pending = {}
+        self._lock = threading.Lock()
+        threading.Thread(target=self._loop, daemon=True).start()
+
+    def _touch(self, path: Path):
+        with self._lock: self._pending[path] = time.monotonic() + 1.
+
+    def _remove(self, path: Path):
+        with self._lock: self._pending.pop(path, None)
+        self.remove(path)
+
+    def _loop(self):
+        while True:
+            time.sleep(0.5)
+            now = time.monotonic()
+
+            with self._lock:
+                ready = [ path for path, time in self._pending.items() if time <= now ]
+                for path in ready: del self._pending[path]
+
+            for path in ready:
+                if path.exists(): self.add(path)
+
+    def on_created(self, event):
+        if not event.is_directory: self._touch(Path(event.src_path))
+
+    def on_modified(self, event):
+        if not event.is_directory: self._touch(Path(event.src_path))
+
+    def on_deleted(self, event):
+        if not event.is_directory: self._remove(Path(event.src_path))
+        else: self.crawl()
+
+    def on_moved(self, event):
+        if not event.is_directory:
+            self._remove(Path(event.src_path))
+            self._touch(Path(event.dest_path))
+        else: self.crawl()
+
+    ####################
     def crawl(self):
         print(f"[media] Scanning {self.watch_path}")
         found = set()
