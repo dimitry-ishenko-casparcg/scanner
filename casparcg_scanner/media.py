@@ -2,7 +2,6 @@ import threading
 import time
 
 from pathlib import Path
-from queue import Queue
 from .store import Store
 from .util import generate_thumbnail, get_cinf, get_info, get_media_info
 from watchdog.events import FileSystemEventHandler
@@ -12,7 +11,9 @@ class MediaHandler(FileSystemEventHandler):
     def __init__(self, store: Store, path: Path):
         self._store = store
         self._path = path
-        self._tasks = Queue()
+
+        self._pending = {}
+        self._cond = threading.Condition()
 
     def start(self):
         print("[media] Starting monitor")
@@ -51,8 +52,23 @@ class MediaHandler(FileSystemEventHandler):
             try: func(path)
             except Exception as e: print(f"[media] {e}")
 
-    def _enqueue(self, func, path: str): self._tasks.put((func, Path(path)))
-    def _dequeue(self): return self._tasks.get()
+    def _enqueue(self, func, path: str):
+        task = (func, Path(path))
+        with self._cond:
+            self._pending.pop(task, None)
+            self._pending[task] = time.monotonic() + 1
+            self._cond.notify()
+
+    def _dequeue(self):
+        with self._cond:
+            while True:
+                if self._pending:
+                    task, tick = next(iter(self._pending.items()))
+                    if (wait := tick - time.monotonic()) <= 0:
+                        del self._pending[task]
+                        return task
+                    self._cond.wait(wait)
+                else: self._cond.wait()
 
     def _rescan(self, subdir: Path):
         stored = map(Path, (path for path, in self._store.get_media("path")))
