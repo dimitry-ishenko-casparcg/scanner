@@ -4,7 +4,7 @@ import sys
 
 from . import app, store, __version__
 from pathlib import Path
-from .scanner import Scanner
+from .watcher import Watcher
 from .util import get_scanner_paths
 from waitress import serve
 
@@ -35,9 +35,9 @@ def main():
         db_path = args.db_path or (args.config.parent / "scanner.db")
         store.connect(db_path)
 
-        scanner = Scanner(store, **scanner_paths)
-        scanner.crawl()
-        scanner.monitor()
+        watcher = Watcher(store, **scanner_paths)
+        watcher.crawl()
+        watcher.monitor()
 
         print(f"[main] Listening on {args.http_addr}:{args.http_port}")
         serve(app, host=args.http_addr, port=args.http_port)

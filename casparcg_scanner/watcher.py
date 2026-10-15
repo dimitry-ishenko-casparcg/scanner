@@ -5,7 +5,7 @@ from .store import Store
 from .templates import TemplateHandler
 from watchdog.observers import Observer
 
-class Scanner:
+class Watcher:
     def __init__(self, store: Store, font_path: Path, media_path: Path, template_path: Path):
         self.observer = Observer()
         self.handlers = [ FontHandler(store, font_path),
@@ -20,5 +20,5 @@ class Scanner:
         for handler in self.handlers:
             self.observer.schedule(handler, handler.watch_path, recursive=True)
 
-        print("[scanner] Starting monitor")
+        print("[watcher] Starting monitor")
         self.observer.start()
