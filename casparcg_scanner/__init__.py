@@ -9,6 +9,8 @@ from .store import Store
 
 app = Flask(__name__)
 
+# used for testing flask endpoints, eg:
+# SCANNER_DB_PATH=/path/to/scanner.db flask --app casparcg_scanner shell
 db_path = os.environ.get("SCANNER_DB_PATH")
 store = Store(Path(db_path) if db_path else None)
 
