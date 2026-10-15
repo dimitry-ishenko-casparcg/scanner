@@ -1,6 +1,7 @@
 import json
 
 from lxml import html
+from .media import MediaHandler
 from pathlib import Path
 from .store import Store
 
@@ -33,7 +34,8 @@ class MediaScanner(Scanner):
         self._store = store
 
     def monitor(self):
-        pass
+        self._handler = MediaHandler(self._store, self._path)
+        self._handler.start()
 
     def cinf(self, name: str):
         row = self._store.get_media("cinf", name=name)

@@ -31,16 +31,6 @@ class Store:
                 self._db.executescript(schema)
             except sqlite3.Error as e: raise sqlite3.Error(f"{e}: {db_path}")
 
-    def _get_one(self, *field, name: str):
-        with self._lock:
-            sql = f"SELECT {','.join(field)} FROM media WHERE name = ?"
-            return self._db.execute(sql, (name,)).fetchone()
-
-    def _get_all(self, *field):
-        with self._lock:
-            sql = f"SELECT {','.join(field)} FROM media ORDER BY name ASC"
-            return self._db.execute(sql).fetchall()
-
     def add_media(self, name:str, path:str, size:int, time:float, cinf:str, tinf:str, media_info:str, thumbnail:bytes):
         with self._lock, self._db:
             sql = """
@@ -63,7 +53,3 @@ class Store:
             else:
                 sql = f"SELECT {field} FROM media WHERE name = ?"
                 return self._db.execute(sql, (name,)).fetchone()
-
-    def get_media_size_time(self, name: str):
-        return self._get_one("size", "time", name=name)
-    def get_media_paths(self): return [ path for path, in self._get_all("path") ]
