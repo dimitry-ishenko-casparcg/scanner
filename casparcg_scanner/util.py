@@ -8,8 +8,8 @@ from pathlib import Path
 def get_info(path: Path):
     res = subprocess.run(
         [ "ffprobe", "-hide_banner", "-i", path, "-show_streams", "-show_format", "-print_format", "json" ],
-        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-        text=True, check=True, timeout=10
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        check=True, timeout=10
     )
     info = json.loads(res.stdout)
     if not info.get("streams"): raise ValueError("no media streams")
@@ -130,7 +130,7 @@ def generate_thumbnail(name: str, path: Path, info: dict):
                 "-vf", ",".join(filter(None, [vf, "scale=256:-1"])),
                 "-frames:v", "1", "-threads", "1", "-f", "image2pipe", "-vcodec", "png", "-"
             ],
-            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             check=True, timeout=10
         )
         return res.stdout
