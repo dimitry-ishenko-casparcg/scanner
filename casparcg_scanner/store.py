@@ -31,18 +31,6 @@ class Store:
                 self._db.executescript(schema)
             except sqlite3.Error as e: raise sqlite3.Error(f"{e}: {db_path}")
 
-    def _add(self, table: str, fields: tuple, item: tuple):
-        with self._lock, self._db:
-            places = ",".join(["?"] * len(fields))
-            fields = ",".join(fields)
-            sql = f"INSERT OR REPLACE INTO {table} ({fields}) VALUES ({places})"
-            self._db.execute(sql, item)
-
-    def _remove(self, table: str, name: str):
-        with self._lock, self._db:
-            sql = f"DELETE FROM {table} WHERE name = ?"
-            self._db.execute(sql, (name,))
-
     def _get(self, table: str, fields: tuple, **match):
         with self._lock:
             fields = ",".join(fields)
@@ -53,13 +41,19 @@ class Store:
             sql = f"SELECT {fields} FROM {table} {cond} ORDER BY name ASC"
             return self._db.execute(sql, params).fetchall()
 
-    ####################
     def add_media(self, name: str, path: str, size: int, time: float,
         cinf: str, tinf: str, media_info: str, thumbnail: bytes):
-        self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"),
-            (name, path, size, time, cinf, tinf, media_info, thumbnail)
-        )
-    def remove_media(self, name: str): self._remove("media", name)
+        with self._lock, self._db:
+            sql = """
+                INSERT OR REPLACE
+                INTO media (name, path, size, time, cinf, tinf, media_info, thumbnail)
+                VALUES (?,?,?,?,?,?,?,?)
+            """
+            self._db.execute(sql, (name, path, size, time, cinf, tinf, media_info, thumbnail))
+
+    def remove_media(self, name: str):
+        with self._lock, self._db:
+            self._db.execute("DELETE FROM media WHERE name = ?", (name,))
 
     def get_media_size_time(self, name: str):
         rows = self._get("media", ("size", "time"), name=name)
