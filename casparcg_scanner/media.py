@@ -4,6 +4,7 @@ import time
 from pathlib import Path
 from queue import Queue
 from .store import Store
+from .util import generate_thumbnail, get_cinf, get_info, get_media_info
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -57,4 +58,28 @@ class MediaHandler(FileSystemEventHandler):
         pass
 
     def _update(self, path: Path):
-        pass
+        name = path.relative_to(self._path).with_suffix("")
+        name = str(name).upper().replace("\\", "/")
+
+        try: stat = path.stat()
+        except FileNotFoundError:
+            if self._store.get_media("name", name=name):
+                print(f"[media] Removing {name}")
+                self._store.remove_media(name)
+            return
+
+        size, mtime = stat.st_size, stat.st_mtime
+        if row := self._store.get_media("size", "time", name=name):
+            if row == (size, mtime): return
+
+        print(f"[media] Adding {name} => {path}")
+        info = cinf = media_info = tinf = image = None
+        try:
+            info = get_info(path)
+            cinf = get_cinf(name, size, mtime, info)
+            media_info = get_media_info(name, path, size, mtime, info)
+
+            tinf, image = generate_thumbnail(name, path, info)
+        except Exception as e: print(f"[media] {name}: {e}")
+
+        self._store.add_media(name, str(path), size, mtime, cinf, tinf, media_info, image)
