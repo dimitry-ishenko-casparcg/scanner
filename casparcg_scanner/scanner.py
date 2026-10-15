@@ -25,10 +25,7 @@ class Scanner:
 
 class FontScanner(Scanner):
     _types = {"ttf", "otf", "woff", "woff2"}
-
-    def names(self):
-        print(f"[fonts] Scanning names {self._path}")
-        return sorted({ name for _, name, _ in self._crawl() })
+    def names(self): return sorted({ name for _, name, _ in self._crawl() })
 
 
 class MediaScanner(Scanner):
@@ -62,10 +59,7 @@ class MediaScanner(Scanner):
 
 class TemplateScanner(Scanner):
     _types = {"html", "htm", "ft", "wt", "ct", "swf"}
-
-    def names(self):
-        print(f"[templates] Scanning names {self._path}")
-        return sorted({ name for _, name, _ in self._crawl() })
+    def names(self): return sorted({ name for _, name, _ in self._crawl() })
 
     def templates(self):
         def make_tmpl(path, name, type):
@@ -82,5 +76,4 @@ class TemplateScanner(Scanner):
             except Exception as e: print(f"[templates] {e} in {path}")
             return tmpl
 
-        print(f"[templates] Scanning names {self._path}")
         return [ make_tmpl(*args) for args in sorted(self._crawl()) ]
