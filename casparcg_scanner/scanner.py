@@ -1,7 +1,7 @@
 import json
 
+from lxml import html
 from pathlib import Path
-from .util import get_gdd
 
 class Scanner:
     _path = None
@@ -39,12 +39,17 @@ class TemplateScanner(Scanner):
 
     def templates(self):
         def make_tmpl(path, name, type):
-            gdd = None
-            try: gdd = get_gdd(path)
-            except Exception as e: print(f"[templates] Error in {path}: {e}")
+            tmpl = {"id": name, "path": str(path), "type": type}
+            try:
+                tree = html.parse(path)
+                if scripts := tree.xpath("//script[@name='graphics-data-definition']"):
+                    src = scripts[0].get("src")
 
-            tmpl = {"id": name, "path": str(path), "type": type_}
-            if gdd: tmpl["gdd"] = json.loads(gdd)
+                    if src: gdd = (path.parent / src).read_text(encoding="utf8")
+                    else: gdd = scripts[0].text
+
+                    tmpl["gdd"] = json.loads(gdd)
+            except Exception as e: print(f"[templates] Error in {path}: {e}")
             return tmpl
 
         print(f"[templates] Scanning names {self._path}")

@@ -3,7 +3,7 @@ import math
 import subprocess
 
 from datetime import datetime
-from lxml import etree, html
+from lxml import etree
 from pathlib import Path
 
 def get_scanner_paths(config_path: Path):
@@ -31,18 +31,6 @@ def get_name_type(path: Path, base_path: Path, types = None):
 
     name = str(path.relative_to(base_path).with_suffix("")).upper().replace("\\", "/")
     return name, type_
-
-def get_gdd(path: Path):
-    tree = html.parse(path)
-    scripts = tree.xpath("//script[@name='graphics-data-definition']")
-    if not scripts: return None
-
-    src = scripts[0].get("src")
-    if src: gdd = (path.parent / src).read_text(encoding="utf8")
-    else: gdd = scripts[0].text
-
-    json.loads(gdd) # test gdd
-    return gdd.strip()
 
 def get_info(path: Path):
     res = subprocess.run(
