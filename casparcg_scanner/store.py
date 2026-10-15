@@ -4,11 +4,6 @@ import threading
 from pathlib import Path
 
 schema = """
-CREATE TABLE IF NOT EXISTS font (
-    name TEXT PRIMARY KEY,
-    path TEXT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS media (
     name TEXT PRIMARY KEY,
     path TEXT NOT NULL,
@@ -18,13 +13,6 @@ CREATE TABLE IF NOT EXISTS media (
     tinf TEXT,
     media_info TEXT,
     thumbnail BLOB
-);
-
-CREATE TABLE IF NOT EXISTS template (
-    name TEXT PRIMARY KEY,
-    path TEXT NOT NULL,
-    type TEXT NOT NULL,
-    gdd TEXT
 );
 """
 
@@ -66,12 +54,6 @@ class Store:
             return self._db.execute(sql, params).fetchall()
 
     ####################
-    def add_font(self, name: str, path: str): self._add("font", ("name", "path"), (name, path))
-    def remove_font(self, name: str): self._remove("font", name)
-    def get_font_names(self): return [ name for name, in self._get("font", ("name",)) ]
-    def get_font_paths(self): return [ path for path, in self._get("font", ("path",)) ]
-
-    ####################
     def add_media(self, name: str, path: str, size: int, time: float,
         cinf: str, tinf: str, media_info: str, thumbnail: bytes):
         self._add("media", ("name", "path", "size", "time", "cinf", "tinf", "media_info", "thumbnail"),
@@ -98,12 +80,3 @@ class Store:
     def get_media_thumbnail(self, name: str):
         rows = self._get("media", ("thumbnail",), name=name)
         return rows[0][0] if rows else None
-
-    ####################
-    def add_template(self, name: str, path: str, type_: str, gdd: str):
-        self._add("template", ("name", "path", "type", "gdd"), (name, path, type_, gdd))
-    def remove_template(self, name: str): self._remove("template", name)
-    def get_templates(self): return self._get("template", ("name", "path", "type", "gdd"))
-
-    def get_template_names(self): return [ name for name, in self._get("template", ("name",)) ]
-    def get_template_paths(self): return [ path for path, in self._get("template", ("path",)) ]

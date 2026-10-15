@@ -4,9 +4,13 @@ import base64, json, os
 
 from flask import Flask, Response
 from pathlib import Path
+from .scanner import FontScanner, TemplateScanner
 from .store import Store
 
 app = Flask(__name__)
+
+font = FontScanner()
+tmpl = TemplateScanner()
 
 db_path = os.environ.get("SCANNER_DB_PATH")
 store = Store(Path(db_path) if db_path else None)
@@ -26,7 +30,7 @@ def cls():
 
 @app.route("/fls")
 def fls():
-    rows = "\r\n".join(store.get_font_names() + [""])
+    rows = "\r\n".join(font.names() + [""])
     body = f"200 FLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")
 
@@ -49,13 +53,7 @@ def media_thumbnail_path(name):
 
 @app.route("/templates")
 def templates():
-    def make(name, path, type_, gdd):
-        tmpl = { "id": name, "path": path, "type": type_ }
-        if gdd: tmpl["gdd"] = json.loads(gdd)
-        return tmpl
-    templates = [ make(*tmpl) for tmpl in store.get_templates() ]
-
-    body = json.dumps({ "templates": templates })
+    body = json.dumps({ "templates": tmpl.templates() })
     return Response(body, mimetype="application/json")
 
 @app.route("/thumbnail")
@@ -74,6 +72,6 @@ def thumbnail_path(name):
 
 @app.route("/tls")
 def tls():
-    rows = "\r\n".join(store.get_template_names() + [""])
+    rows = "\r\n".join(tmpl.names() + [""])
     body = f"200 TLS OK\r\n{rows}\r\n"
     return Response(body, mimetype="text/plain")

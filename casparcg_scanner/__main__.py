@@ -2,7 +2,7 @@ import argparse
 import shutil
 import sys
 
-from . import app, store, __version__
+from . import app, font, store, tmpl, __version__
 from pathlib import Path
 from .watcher import Watcher
 from .util import get_scanner_paths
@@ -32,10 +32,13 @@ def main():
 
         scanner_paths = get_scanner_paths(args.config)
 
+        font.set_path(scanner_paths["font_path"])
+        tmpl.set_path(scanner_paths["template_path"])
+
         db_path = args.db_path or (args.config.parent / "scanner.db")
         store.connect(db_path)
 
-        watcher = Watcher(store, **scanner_paths)
+        watcher = Watcher(store, scanner_paths["media_path"])
         watcher.crawl()
         watcher.monitor()
 

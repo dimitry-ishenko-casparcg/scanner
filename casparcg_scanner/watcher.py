@@ -1,17 +1,12 @@
-from .fonts import FontHandler
 from .media import MediaHandler
 from pathlib import Path
 from .store import Store
-from .templates import TemplateHandler
 from watchdog.observers import Observer
 
 class Watcher:
-    def __init__(self, store: Store, font_path: Path, media_path: Path, template_path: Path):
+    def __init__(self, store: Store, media_path: Path):
         self.observer = Observer()
-        self.handlers = [ FontHandler(store, font_path),
-            MediaHandler(store, media_path),
-            TemplateHandler(store, template_path)
-        ]
+        self.handlers = [ MediaHandler(store, media_path) ]
 
     def crawl(self):
         for handler in self.handlers: handler.crawl()
