@@ -29,7 +29,7 @@ class Store:
             try:
                 self._db = sqlite3.connect(db_path, check_same_thread=False)
                 self._db.executescript(schema)
-            except sqlite3.Error as e: raise sqlite3.Error(f"{e}: {db_path}")
+            except sqlite3.Error as e: raise sqlite3.Error(f"{e} '{db_path}'")
 
     def add_media(self, name:str, path:str, size:int, time:float, cinf:str, tinf:str, media_info:str, thumbnail:bytes):
         with self._lock, self._db:
