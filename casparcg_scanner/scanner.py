@@ -2,6 +2,7 @@ import json
 
 from lxml import html
 from pathlib import Path
+from .store import Store
 
 class Scanner:
     _path = None
@@ -28,6 +29,35 @@ class FontScanner(Scanner):
     def names(self):
         print(f"[fonts] Scanning names {self._path}")
         return sorted({ name for _, name, _ in self._crawl() })
+
+
+class MediaScanner(Scanner):
+    def __init__(self, store: Store):
+        self._store = store
+
+    def monitor(self):
+        pass
+
+    def cinf(self, name: str):
+        row = self._store.get_media("cinf", name=name)
+        return row[0] if row else None
+
+    def cinfs(self):
+        return [ cinf for cinf, in self._store.get_media("cinf") if cinf ]
+
+    def info(self, name: str):
+        row = self._store.get_media("media_info", name=name)
+        return row[0] if row else None
+
+    def infos(self):
+        return [ info for info, in self._store.get_media("media_info") if info ]
+
+    def tinfs(self):
+        return [ tinf for tinf, in self._store.get_media("tinf") if tinf ]
+
+    def thumbnail(self, name: str):
+        row = self._store.get_media("thumbnail", name=name)
+        return row[0] if row else None
 
 
 class TemplateScanner(Scanner):
