@@ -1,3 +1,4 @@
+import subprocess
 import threading
 import time
 
@@ -100,6 +101,15 @@ class MediaHandler(FileSystemEventHandler):
             media_info = get_media_info(name, path, size, mtime, info)
 
             tinf, image = generate_thumbnail(name, path, info)
-        except Exception as e: print(f"[media] {e} in '{path}'")
+
+        except subprocess.CalledProcessError as e:
+            lines = e.stderr.decode(errors="replace").splitlines()
+            msg = lines[-1] if lines else f"exit status {e.returncode}"
+            print(f"[media] {e.cmd[0]}: {msg}")
+
+        except subprocess.TimeoutExpired as e:
+            print(f"[media] {e.cmd[0]}: timeout expired")
+
+        except Exception as e: print(f"[media] {e}")
 
         self._store.add_media(name, str(path), size, mtime, cinf, tinf, media_info, image)
