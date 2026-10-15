@@ -31,18 +31,17 @@ class Store:
                 self._db.executescript(schema)
             except sqlite3.Error as e: raise sqlite3.Error(f"{e}: {db_path}")
 
-    def _get(self, table: str, fields: tuple, **match):
+    def _get_one(self, *field, name: str):
         with self._lock:
-            fields = ",".join(fields)
-            cond, params = "", []
-            if match:
-                cond = "WHERE " + (" AND ".join(f"{name} = ?" for name in match.keys()))
-                params = list(match.values())
-            sql = f"SELECT {fields} FROM {table} {cond} ORDER BY name ASC"
-            return self._db.execute(sql, params).fetchall()
+            sql = f"SELECT {','.join(field)} FROM media WHERE name = ?"
+            return self._db.execute(sql, (name,)).fetchone()
 
-    def add_media(self, name: str, path: str, size: int, time: float,
-        cinf: str, tinf: str, media_info: str, thumbnail: bytes):
+    def _get_all(self, *field):
+        with self._lock:
+            sql = f"SELECT {','.join(field)} FROM media ORDER BY name ASC"
+            return self._db.execute(sql).fetchall()
+
+    def add_media(self, name:str, path:str, size:int, time:float, cinf:str, tinf:str, media_info:str, thumbnail:bytes):
         with self._lock, self._db:
             sql = """
                 INSERT OR REPLACE
@@ -56,21 +55,20 @@ class Store:
             self._db.execute("DELETE FROM media WHERE name = ?", (name,))
 
     def get_media_size_time(self, name: str):
-        rows = self._get("media", ("size", "time"), name=name)
-        return rows[0] if rows else None
-    def get_media_paths(self): return [ path for path, in self._get("media", ("path",)) ]
+        return self._get_one("size", "time", name=name)
+    def get_media_paths(self): return [ path for path, in self._get_all("path") ]
 
     def get_media_cinf(self, name: str):
-        rows = self._get("media", ("cinf",), name=name)
-        return rows[0][0] if rows else None
-    def get_media_cinfs(self): return [ cinf for cinf, in self._get("media", ("cinf",)) if cinf ]
+        row = self._get_one("cinf", name=name)
+        return row[0] if row else None
+    def get_media_cinfs(self): return [ cinf for cinf, in self._get_all("cinf") if cinf ]
 
     def get_media_info(self, name: str):
-        rows = self._get("media", ("media_info",), name=name)
-        return rows[0][0] if rows else None
-    def get_media_infos(self): return [ info for info, in self._get("media", ("media_info",)) if info ]
+        row = self._get_one("media_info", name=name)
+        return row[0] if row else None
+    def get_media_infos(self): return [ info for info, in self._get_all("media_info") if info ]
 
-    def get_media_tinfs(self): return [ tinf for tinf, in self._get("media", ("tinf",)) if tinf ]
+    def get_media_tinfs(self): return [ tinf for tinf, in self._get_all("tinf") if tinf ]
     def get_media_thumbnail(self, name: str):
-        rows = self._get("media", ("thumbnail",), name=name)
-        return rows[0][0] if rows else None
+        row = self._get_one("thumbnail", name=name)
+        return row[0] if row else None
