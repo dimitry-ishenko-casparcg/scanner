@@ -54,8 +54,12 @@ class MediaHandler(FileSystemEventHandler):
     def _enqueue(self, func, path: str): self._tasks.put((func, Path(path)))
     def _dequeue(self): return self._tasks.get()
 
-    def _rescan(self, path: Path):
-        pass
+    def _rescan(self, subdir: Path):
+        stored = map(Path, (path for path, in self._store.get_media("path")))
+        stored = { path for path in stored if path.is_relative_to(subdir) }
+
+        found = { path for path in subdir.rglob("*") if path.is_file() }
+        for path in stored | found: self._update(path)
 
     def _update(self, path: Path):
         name = path.relative_to(self._path).with_suffix("")
