@@ -54,6 +54,16 @@ class Store:
         with self._lock, self._db:
             self._db.execute("DELETE FROM media WHERE name = ?", (name,))
 
+    def get_media(self, *field, name: str = None):
+        with self._lock:
+            field = ",".join(field)
+            if name is None:
+                sql = f"SELECT {field} FROM media ORDER BY name ASC"
+                return self._db.execute(sql).fetchall()
+            else:
+                sql = f"SELECT {field} FROM media WHERE name = ?"
+                return self._db.execute(sql, (name,)).fetchone()
+
     def get_media_size_time(self, name: str):
         return self._get_one("size", "time", name=name)
     def get_media_paths(self): return [ path for path, in self._get_all("path") ]
