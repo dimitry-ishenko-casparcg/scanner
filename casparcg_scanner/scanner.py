@@ -63,6 +63,7 @@ class TemplateScanner(Scanner):
 
     def templates(self):
         def make_tmpl(path, name, type):
+            if type == "htm": type = "html"
             tmpl = {"id": name, "path": str(path), "type": type}
             try:
                 tree = html.parse(path)
