@@ -1,3 +1,51 @@
+scanner (0.5) unstable; urgency=medium
+
+  * Prepare for 0.5 release
+  * media: enqueue updates
+  * media: show process error message
+  * util: keep error messages
+  * scanner: tweak
+  * store: tweak
+  * media: show path in errors
+  * media: add 1-second debounce
+  * media: implement _rescan
+  * media: implement _update()
+  * util: handle files with no scene cut, add timeout
+  * util: remove unused
+  * media: replace with new task-based stub
+  * scanner: re-add htm => html
+  * scanner: quiet
+  * Update error messages
+  * main: absorb get_scanner_paths()
+  * main: remove watcher for now
+  * init: comment
+  * init: use new media scanner
+  * scanner: add stub for new MediaScanner
+  * store: add get_media() for future media scanner
+  * scanner: absorb get_gdd()
+  * scanner: replace get_name_type()
+  * scanner: hide crawl()
+  * store: refactor
+  * Merge media and handler
+  * store: refactor
+  * Switch to stateless font and template scanners
+  * Add stateless font and template scanners
+  * Scanner => Watcher
+  * media: fix error handling
+  * media: raise error on invalid media
+  * media: detect offline changes
+  * main: force unicode on Windows
+  * systemd: fix path
+  * store: fix typos
+  * util: missing annotations
+  * scanner: missing import
+  * store: show db path on error
+  * main: fail on missing ffprobe or ffmpeg
+  * util: report non-existent paths
+  * main: tweak
+
+ -- Dimitry Ishenko <dimitry.ishenko@gmail.com>  Thu, 15 Oct 2026 19:51:43 -0400
+
 scanner (0.4.1) unstable; urgency=medium
 
   * Prepare for 0.4.1 release
