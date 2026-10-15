@@ -10,7 +10,7 @@ class Scanner:
     def set_path(self, path: Path):
         self._path = path.resolve()
 
-    def crawl(self):
+    def _crawl(self):
         for path in self._path.rglob("*"):
             if path.is_file():
                 name, type_ = get_name_type(path, self._path, self._types)
@@ -22,7 +22,7 @@ class FontScanner(Scanner):
 
     def names(self):
         print(f"[fonts] Scanning names {self._path}")
-        return sorted({ name for name, *_ in self.crawl() })
+        return sorted({ name for name, *_ in self._crawl() })
 
 
 class TemplateScanner(Scanner):
@@ -30,7 +30,7 @@ class TemplateScanner(Scanner):
 
     def names(self):
         print(f"[templates] Scanning names {self._path}")
-        return sorted({ name for name, *_ in self.crawl() })
+        return sorted({ name for name, *_ in self._crawl() })
 
     def templates(self):
         def make(name, type_, path):
@@ -43,4 +43,4 @@ class TemplateScanner(Scanner):
             return tmpl
 
         print(f"[templates] Scanning names {self._path}")
-        return [ make(*args) for args in sorted(self.crawl()) ]
+        return [ make(*args) for args in sorted(self._crawl()) ]
