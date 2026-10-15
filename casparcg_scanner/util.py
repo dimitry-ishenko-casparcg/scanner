@@ -3,26 +3,7 @@ import math
 import subprocess
 
 from datetime import datetime
-from lxml import etree
 from pathlib import Path
-
-def get_scanner_paths(config_path: Path):
-    root = etree.parse(config_path).getroot()
-    if root.tag != "configuration":
-        raise ValueError(f"Invalid root tag <{root.tag}>")
-
-    def get_path(xpath, fallback):
-        val = root.findtext(xpath, default="").strip()
-        # If 'Path(...)' is absolute, 'config_path' will be ignored.
-        path = config_path.parent / Path(val or fallback)
-        if not path.is_dir(): raise ValueError(f"Directory not found: {path}")
-        return path
-
-    return {
-        "font_path": get_path("paths/font-path", "font"),
-        "media_path": get_path("paths/media-path", "media"),
-        "template_path": get_path("paths/template-path", "template")
-    }
 
 def get_name_type(path: Path, base_path: Path, types = None):
     type_ = path.suffix.lower()[1:]

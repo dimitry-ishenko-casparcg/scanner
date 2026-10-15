@@ -3,8 +3,8 @@ import shutil
 import sys
 
 from . import app, font, mdia, store, tmpl, __version__
+from lxml import etree
 from pathlib import Path
-from .util import get_scanner_paths
 from waitress import serve
 
 def main():
@@ -32,11 +32,20 @@ def main():
         db_path = args.db_path or (args.config.parent / "scanner.db")
         store.connect(db_path)
 
-        scanner_paths = get_scanner_paths(args.config)
+        root = etree.parse(args.config).getroot()
+        if root.tag != "configuration":
+            raise ValueError(f"invalid root tag <{root.tag}>")
 
-        font.set_path(scanner_paths["font_path"])
-        mdia.set_path(scanner_paths["media_path"])
-        tmpl.set_path(scanner_paths["template_path"])
+        def get_path(xpath, fallback):
+            val = root.findtext(xpath, default="").strip()
+            # If 'Path(...)' is absolute, 'config_path' will be ignored.
+            path = args.config.parent / Path(val or fallback)
+            if not path.is_dir(): raise ValueError(f"directory {path} not found")
+            return path
+
+        font.set_path(get_path("paths/font-path", "font"))
+        mdia.set_path(get_path("paths/media-path", "media"))
+        tmpl.set_path(get_path("paths/template-path", "template"))
 
         mdia.monitor()
 
