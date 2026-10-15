@@ -67,18 +67,3 @@ class Store:
     def get_media_size_time(self, name: str):
         return self._get_one("size", "time", name=name)
     def get_media_paths(self): return [ path for path, in self._get_all("path") ]
-
-    def get_media_cinf(self, name: str):
-        row = self._get_one("cinf", name=name)
-        return row[0] if row else None
-    def get_media_cinfs(self): return [ cinf for cinf, in self._get_all("cinf") if cinf ]
-
-    def get_media_info(self, name: str):
-        row = self._get_one("media_info", name=name)
-        return row[0] if row else None
-    def get_media_infos(self): return [ info for info, in self._get_all("media_info") if info ]
-
-    def get_media_tinfs(self): return [ tinf for tinf, in self._get_all("tinf") if tinf ]
-    def get_media_thumbnail(self, name: str):
-        row = self._get_one("thumbnail", name=name)
-        return row[0] if row else None
