@@ -40,7 +40,7 @@ def main():
             val = root.findtext(xpath, default="").strip()
             # If 'Path(...)' is absolute, 'config_path' will be ignored.
             path = args.config.parent / Path(val or fallback)
-            if not path.is_dir(): raise ValueError(f"directory {path} not found")
+            if not path.is_dir(): raise ValueError(f"directory not found: {path}")
             return path
 
         font.set_path(get_path("paths/font-path", "font"))
@@ -58,7 +58,7 @@ def main():
 
     except Exception as e:
         if not args.debug:
-            print(str(e), file=sys.stderr)
+            print(f"[main] {e}", file=sys.stderr)
             sys.exit(1)
         else: raise
 

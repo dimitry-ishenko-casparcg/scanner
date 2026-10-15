@@ -79,7 +79,7 @@ class TemplateScanner(Scanner):
                     else: gdd = scripts[0].text
 
                     tmpl["gdd"] = json.loads(gdd)
-            except Exception as e: print(f"[templates] Error in {path}: {e}")
+            except Exception as e: print(f"[templates] {e} in {path}")
             return tmpl
 
         print(f"[templates] Scanning names {self._path}")
