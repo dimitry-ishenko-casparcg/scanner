@@ -50,7 +50,7 @@ class MediaHandler(FileSystemEventHandler):
         while True:
             func, path = self._dequeue()
             try: func(path)
-            except Exception as e: print(f"[media] {e}")
+            except Exception as e: print(f"[media] {e} in '{path}'")
 
     def _enqueue(self, func, path: str):
         task = (func, Path(path))
@@ -100,6 +100,6 @@ class MediaHandler(FileSystemEventHandler):
             media_info = get_media_info(name, path, size, mtime, info)
 
             tinf, image = generate_thumbnail(name, path, info)
-        except Exception as e: print(f"[media] {name}: {e}")
+        except Exception as e: print(f"[media] {e} in '{path}'")
 
         self._store.add_media(name, str(path), size, mtime, cinf, tinf, media_info, image)
