@@ -58,8 +58,7 @@ must have it installed and available on your system.
 Binary packages for Debian, Ubuntu, Raspberry Pi and other Debian-based
 distributions can be installed from the [CCCP Linux Package
 Archive](https://github.com/cccp-linux/archive). Follow their instructions to
-set up the archive and be sure to add the <ins>_casparcg_</ins> component. After
-that:
+set up the archive and be sure to add the _casparcg_ component. Then, run:
 
 ```shell
 sudo apt install casparcg-scanner
